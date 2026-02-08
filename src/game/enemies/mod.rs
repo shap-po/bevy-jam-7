@@ -30,11 +30,26 @@ struct Enemy {
 enum EnemyState {
     Active,
     Inactive,
+    Uninit
+}
+
+impl Enemy{
+    pub fn new() -> Self{
+        Enemy{state:EnemyState::Uninit, timer:Timer::new(Duration::from_secs(10), TimerMode::Once)}
+    }
 }
 
 #[derive(Component, Reflect, Debug, Default)]
 #[reflect(Component)]
 struct Difficulty(i8);
+
+impl Difficulty {
+    pub fn new(difficulty : i8) -> Self{
+        Difficulty{0:difficulty}
+    }
+}
+
+
 
 fn enemy_tick(mut enemy_query: Query<(&mut Enemy, &Difficulty)>, time: Res<Time>) {
     for (mut enemy, difficulty) in &mut enemy_query {
@@ -50,6 +65,9 @@ fn enemy_tick(mut enemy_query: Query<(&mut Enemy, &Difficulty)>, time: Res<Time>
                 EnemyState::Inactive => {
                     enemy.timer.set_duration(Duration::from_secs(10));
                     enemy.state = EnemyState::Active;
+                }
+                EnemyState::Uninit => {
+                    todo!("MAKETIMER");
                 }
             }
         }
