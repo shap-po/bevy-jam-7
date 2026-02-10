@@ -1,3 +1,7 @@
+// TODO: remove
+#![allow(dead_code)]
+#![allow(unused_variables)]
+#![allow(unused_imports)]
 // Support configuring Bevy lints within code.
 #![cfg_attr(bevy_lint, feature(register_tool), register_tool(bevy))]
 // Disable console on Windows for non-dev builds.
@@ -61,6 +65,7 @@ impl Plugin for AppPlugin {
             (
                 AppSystems::TickTimers,
                 AppSystems::RecordInput,
+                AppSystems::HandleInput,
                 AppSystems::Update,
             )
                 .chain(),
@@ -84,6 +89,8 @@ enum AppSystems {
     TickTimers,
     /// Record player input.
     RecordInput,
+    /// Handle player input
+    HandleInput,
     /// Do everything else (consider splitting this into further variants).
     Update,
 }
