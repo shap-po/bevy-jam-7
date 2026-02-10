@@ -1,8 +1,9 @@
 use bevy::prelude::*;
+use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
-use crate::game::input::MappedInput;
 use crate::game::rooms::Room;
+use crate::input_manager::Action;
 use crate::screens::Screen;
 use crate::theme::widget;
 use crate::{AppSystems, PausableSystems};
@@ -51,12 +52,14 @@ fn enter_room(mut commands: Commands, room_assets: Res<BedroomAssets>) {
     ));
 }
 
-fn handle_input(input: Res<MappedInput>, mut next_screen: ResMut<NextState<Room>>) {
-    match input.direction {
-        Vec2::X => next_screen.set(Room::Kitchen),
-        Vec2::Y => next_screen.set(Room::Hall),
-        Vec2::NEG_X => next_screen.set(Room::Bathroom),
-        Vec2::NEG_Y => next_screen.set(Room::Backroom),
-        _ => {}
+fn handle_input(input: Single<&ActionState<Action>>, mut next_screen: ResMut<NextState<Room>>) {
+    if input.just_pressed(&Action::Forward) {
+        next_screen.set(Room::Hall)
+    } else if input.just_pressed(&Action::Back) {
+        next_screen.set(Room::Backroom)
+    } else if input.just_pressed(&Action::Left) {
+        next_screen.set(Room::Bathroom)
+    } else if input.just_pressed(&Action::Right) {
+        next_screen.set(Room::Kitchen)
     }
 }

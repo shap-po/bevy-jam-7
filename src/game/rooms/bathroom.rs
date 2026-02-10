@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 
 use crate::asset_tracking::LoadResource;
-use crate::game::input::MappedInput;
 use crate::game::rooms::Room;
 use crate::screens::Screen;
 use crate::theme::widget;

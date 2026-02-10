@@ -1,8 +1,9 @@
 use std::time::Duration;
 
 use bevy::prelude::*;
+use leafwing_input_manager::prelude::ActionState;
 
-use crate::{AppSystems, PausableSystems, game::input::MappedInput, screens::Screen};
+use crate::{AppSystems, PausableSystems, input_manager::Action, screens::Screen};
 
 mod backroom;
 mod bathroom;
@@ -39,8 +40,8 @@ pub enum Room {
     Backroom,
 }
 
-fn go_back(input: Res<MappedInput>, mut next_screen: ResMut<NextState<Room>>) {
-    if input.direction == Vec2::NEG_Y {
+fn go_back(input: Single<&ActionState<Action>>, mut next_screen: ResMut<NextState<Room>>) {
+    if input.just_pressed(&Action::Back) {
         next_screen.set(Room::Bedroom);
     }
 }

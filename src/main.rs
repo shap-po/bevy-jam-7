@@ -12,6 +12,7 @@ mod audio;
 #[cfg(feature = "dev")]
 mod dev_tools;
 mod game;
+mod input_manager;
 mod menus;
 mod screens;
 mod theme;
@@ -52,6 +53,7 @@ impl Plugin for AppPlugin {
             asset_tracking::plugin,
             audio::plugin,
             game::plugin,
+            input_manager::plugin,
             #[cfg(feature = "dev")]
             dev_tools::plugin,
             menus::plugin,
@@ -64,7 +66,6 @@ impl Plugin for AppPlugin {
             Update,
             (
                 AppSystems::TickTimers,
-                AppSystems::RecordInput,
                 AppSystems::HandleInput,
                 AppSystems::Update,
             )
@@ -87,8 +88,6 @@ impl Plugin for AppPlugin {
 enum AppSystems {
     /// Tick timers.
     TickTimers,
-    /// Record player input.
-    RecordInput,
     /// Handle player input
     HandleInput,
     /// Do everything else (consider splitting this into further variants).
