@@ -8,6 +8,8 @@ pub(super) mod dino;
 pub(super) mod doordash;
 pub(super) mod washer;
 
+const OPPORTUNITY_TIMER_DURATION: Duration = Duration::from_secs(5);
+
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((dino::plugin, doordash::plugin, washer::plugin));
     app.insert_resource(EnemyOpportunity::new());
@@ -27,7 +29,7 @@ struct EnemyOpportunity(Timer);
 impl EnemyOpportunity {
     fn new() -> Self {
         Self {
-            0: Timer::from_seconds(5.0, TimerMode::Repeating),
+            0: Timer::new(OPPORTUNITY_TIMER_DURATION, TimerMode::Repeating),
         }
     }
 }
