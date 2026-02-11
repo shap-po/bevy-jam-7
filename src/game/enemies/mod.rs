@@ -10,6 +10,7 @@ pub(super) mod washer;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((dino::plugin, doordash::plugin, washer::plugin));
+    app.insert_resource(EnemyOpportunity::new());
     app.add_systems(
         Update,
         enemy_tick
@@ -19,28 +20,22 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-#[derive(Component, Reflect, Debug)]
-#[reflect(Component)]
-#[require(Difficulty)]
-struct Enemy {
-    state: EnemyState,
-    timer: Timer,
-}
-#[derive(Reflect, Debug)]
-enum EnemyState {
-    Active,
-    Inactive,
-    Uninit,
-}
+#[derive(Resource, Reflect, Debug, Default)]
+#[reflect(Resource)]
+struct EnemyOpportunity(Timer);
 
-impl Enemy {
-    pub fn new() -> Self {
-        Enemy {
-            state: EnemyState::Uninit,
-            timer: Timer::new(Duration::from_secs(10), TimerMode::Once),
+impl EnemyOpportunity {
+    fn new() -> Self {
+        Self {
+            0: Timer::from_seconds(5.0, TimerMode::Repeating),
         }
     }
 }
+
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+#[require(Difficulty)]
+struct Enemy;
 
 #[derive(Component, Reflect, Debug, Default)]
 #[reflect(Component)]
@@ -52,25 +47,30 @@ impl Difficulty {
     }
 }
 
-fn enemy_tick(mut enemy_query: Query<(&mut Enemy, &Difficulty)>, time: Res<Time>) {
-    for (mut enemy, difficulty) in &mut enemy_query {
+#[derive(EntityEvent, Debug)]
+pub struct EnemyTicked {
+    #[event_target]
+    entity: Entity,
+}
+
+fn enemy_tick(
+    mut commands: Commands,
+    mut enemy_query: Query<(Entity, &Enemy, &Difficulty)>,
+    mut opportunity_timer: ResMut<EnemyOpportunity>,
+    time: Res<Time>,
+) {
+    opportunity_timer.0.tick(time.delta());
+    if !opportunity_timer.0.is_finished() {
+        return;
+    }
+
+    for (entity, enemy, difficulty) in &mut enemy_query {
         if difficulty.0 == 0 {
             continue;
         }
-        enemy.timer.tick(time.delta());
-        if enemy.timer.is_finished() {
-            match enemy.state {
-                EnemyState::Active => {
-                    todo!("MAKE PLAYER IMPLODE");
-                }
-                EnemyState::Inactive => {
-                    enemy.timer.set_duration(Duration::from_secs(10));
-                    enemy.state = EnemyState::Active;
-                }
-                EnemyState::Uninit => {
-                    todo!("MAKETIMER");
-                }
-            }
+
+        if rand::random_range(0.0..=20.0) < difficulty.0.into() {
+            commands.trigger(EnemyTicked { entity });
         }
     }
 }

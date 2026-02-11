@@ -1,4 +1,4 @@
-use crate::game::enemies::{Difficulty, Enemy, EnemyState};
+use crate::game::enemies::{Difficulty, Enemy};
 use bevy::{prelude::*, transform::components};
 
 pub(super) fn plugin(app: &mut App) {}
@@ -12,6 +12,6 @@ pub fn doordash(difficulty: i8) -> impl Bundle {
         Name::new("Doordash"),
         Doordash,
         Difficulty::new(difficulty),
-        Enemy::new(),
+        Enemy,
     )
 }
