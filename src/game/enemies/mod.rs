@@ -4,9 +4,9 @@ use bevy::prelude::*;
 
 use crate::{AppSystems, PausableSystems, screens::Screen};
 
-mod dino;
-mod doordash;
-mod washer;
+pub(super) mod dino;
+pub(super) mod doordash;
+pub(super) mod washer;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((dino::plugin, doordash::plugin, washer::plugin));
