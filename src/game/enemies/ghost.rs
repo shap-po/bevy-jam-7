@@ -1,6 +1,6 @@
 use crate::game::enemies::{Difficulty, Enemy, EnemyTicked};
-use bevy::{prelude::*, transform::components};
 use crate::game::rooms::Room;
+use bevy::{prelude::*, transform::components};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_observer(handle_opportunity);
@@ -19,13 +19,22 @@ pub fn ghost(difficulty: i8) -> impl Bundle {
     )
 }
 
-fn handle_opportunity(_: On<EnemyTicked>, mut ghost: Single<&mut Ghost>, room: Res<State<Room>>){
-    if **room == Room::Bedroom{
-        ghost.0 = 0; 
+fn handle_opportunity(
+    event: On<EnemyTicked>,
+    ghost_query: Single<(Entity, &mut Ghost)>,
+    room: Res<State<Room>>,
+) {
+    let (entity, mut ghost) = ghost_query.into_inner();
+    if entity != event.event_target() {
+        return;
     }
-    else{
-        ghost.0 += 1; 
-        if ghost.0 > 10 { todo!("manamded")}
+
+    if **room == Room::Bedroom {
+        ghost.0 = 0;
+    } else {
+        ghost.0 += 1;
+        if ghost.0 > 10 {
+            todo!("manamded")
+        }
     }
 }
-

@@ -4,12 +4,13 @@ use rand::prelude::*; //rand::random_bool(1.0)
 use crate::game::enemies::{Difficulty, Enemy, EnemyTicked};
 
 pub(super) fn plugin(app: &mut App) {
+    app.init_resource::<KitchenWindowClosed>();
     app.add_observer(handle_opportunity);
 }
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-enum Dino{
+enum Dino {
     Away,
     Far,
     Stalk,
@@ -26,14 +27,26 @@ pub fn dino(difficulty: i8) -> impl Bundle {
     )
 }
 
-fn handle_opportunity(_: On<EnemyTicked>, mut dino: Single<&mut Dino>, window: Res<KitchenWindowClosed>) {
-    **dino = match **dino{
+fn handle_opportunity(
+    event: On<EnemyTicked>,
+    dino_query: Single<(Entity, &mut Dino)>,
+    window: Res<KitchenWindowClosed>,
+) {
+    let (entity, mut dino) = dino_query.into_inner();
+    if entity != event.event_target() {
+        return;
+    }
+
+    *dino = match *dino {
         Dino::Away => Dino::Far,
         Dino::Far => Dino::Stalk,
         Dino::Stalk => {
-            if window.0 {Dino::Away}
-            else {Dino::Death}
-        },
+            if window.0 {
+                Dino::Away
+            } else {
+                Dino::Death
+            }
+        }
         Dino::Death => todo!("manamded"),
     };
 }
