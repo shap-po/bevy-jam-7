@@ -7,9 +7,10 @@ use crate::{AppSystems, PausableSystems, screens::Screen};
 pub(super) mod dino;
 pub(super) mod doordash;
 pub(super) mod washer;
+pub(super) mod ghost;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins((dino::plugin, doordash::plugin, washer::plugin));
+    app.add_plugins((dino::plugin, doordash::plugin, washer::plugin, ghost::plugin,));
     app.insert_resource(EnemyOpportunity::new());
     app.add_systems(
         Update,
