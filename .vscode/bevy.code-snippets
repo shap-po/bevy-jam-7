@@ -7,8 +7,8 @@
             "",
             "pub(super) fn plugin(app: &mut App) {",
             "\t$0",
-            "}"
-        ]
+            "}",
+        ],
     },
     "Bevy: New Component": {
         "scope": "rust",
@@ -16,8 +16,8 @@
         "body": [
             "#[derive(Component, Reflect, Debug)]",
             "#[reflect(Component)]",
-            "struct $1;"
-        ]
+            "struct $1;",
+        ],
     },
     "Bevy: New Resource": {
         "scope": "rust",
@@ -25,16 +25,13 @@
         "body": [
             "#[derive(Resource, Reflect, Debug, Default)]",
             "#[reflect(Resource)]",
-            "struct $1;"
-        ]
+            "struct $1;",
+        ],
     },
     "Bevy: New Event": {
         "scope": "rust",
         "prefix": "event",
-        "body": [
-            "#[derive(Event, Debug)]",
-            "struct $1;"
-        ]
+        "body": ["#[derive(Event, Debug)]", "struct $1;"],
     },
     "Bevy: New SystemSet": {
         "scope": "rust",
@@ -43,16 +40,16 @@
             "#[derive(SystemSet, Copy, Clone, Eq, PartialEq, Hash, Debug)]",
             "enum $1 {",
             "\t$0",
-            "}"
-        ]
+            "}",
+        ],
     },
     "Bevy: New Schedule": {
         "scope": "rust",
         "prefix": "schedule",
         "body": [
             "#[derive(ScheduleLabel, Copy, Clone, Eq, PartialEq, Hash, Debug)]",
-            "struct $1;"
-        ]
+            "struct $1;",
+        ],
     },
     "Bevy: New States": {
         "scope": "rust",
@@ -62,7 +59,17 @@
             "enum $1 {",
             "\t#[default]",
             "\t$0",
-            "}"
-        ]
-    }
+            "}",
+        ],
+    },
+    "Bevy: Commands": {
+        "scope": "rust",
+        "prefix": "commands",
+        "body": "mut commands: Commands",
+    },
+    "Skip formatting": {
+        "scope": "rust",
+        "prefix": ["nofmt", "skipfmt"],
+        "body": "#[rustfmt::skip]",
+    },
 }
