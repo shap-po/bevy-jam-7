@@ -34,6 +34,14 @@ impl EnemyOpportunity {
     }
 }
 
+#[derive(Debug)]
+pub enum EnemyType {
+    Dino,
+    Doordash,
+    Ghost,
+    Washer,
+}
+
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
 #[require(Difficulty)]

@@ -3,6 +3,7 @@ use bevy::{ecs::name, prelude::*};
 use crate::screens::Screen;
 
 mod enemies;
+pub mod events;
 mod interactions;
 mod rooms;
 
