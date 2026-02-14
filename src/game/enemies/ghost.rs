@@ -31,7 +31,7 @@ fn handle_opportunity(
         return;
     }
 
-    if **room == Room::Bedroom {
+    if **room == Room::BedroomBed {
         ghost.0 = 0;
     } else {
         ghost.0 += 1;
