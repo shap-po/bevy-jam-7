@@ -1,10 +1,10 @@
-use crate::game::enemies::{Difficulty, Enemy, EnemyTicked};
+use crate::game::{enemies::{Difficulty, Enemy, EnemyTicked, EnemyType, doordash}, events::GameOver};
 use bevy::{prelude::*, transform::components};
 use rand::{Rng, rng};
 
 pub(super) fn plugin(app: &mut App) {
-    app.init_resource::<FoodBrought>();
     app.add_observer(handle_opportunity);
+    app.add_observer(doordash_complete);
 }
 
 #[derive(Component, Reflect, Debug)]
@@ -46,7 +46,7 @@ const MAXSTATESWAITING: i8 = 5; // todo: replace with difficulty scaling
 fn handle_opportunity(
     event: On<EnemyTicked>,
     doordash_query: Single<(Entity, &mut Doordash)>,
-    food_brought: Res<FoodBrought>,
+    mut command: Commands,
 
 ) {
     let (entity, mut doordash) = doordash_query.into_inner();
@@ -65,19 +65,42 @@ fn handle_opportunity(
         },
         Doordash::Waiting{state_counter , food_want} => {
             if state_counter > MAXSTATESWAITING {
+                command.trigger(GameOver::Loose(EnemyType::Doordash));
                 Doordash::Death
-            }
-            else if food_brought.0 == food_want{
-                Doordash::Away(0)
             }
             else {
                 Doordash::Waiting{state_counter: state_counter + 1, food_want}
             }
         },
-        Doordash::Death => todo!(),
+        Doordash::Death => Doordash::Death,
     }
 }
 
 #[derive(Resource, Reflect, Debug, Default)]
 #[reflect(Resource)]
-pub struct FoodBrought(Food);
+pub struct FoodPlayer(Option<Food>);
+
+
+
+#[derive(Event, Reflect, Debug, Default)]
+pub struct FoodBrought;
+
+
+fn doordash_complete(
+    event: On<FoodBrought>,
+    mut doordash: Single<&mut Doordash>,
+    mut command: Commands,
+    mut food_player: ResMut<FoodPlayer>,
+){
+    let Doordash::Waiting{ state_counter, food_want } = **doordash else {return;};
+    let Some(food_player_unpack) = food_player.0 else {return;};
+
+    if food_player_unpack == food_want{
+        **doordash = Doordash::Away(0);
+        food_player.0 = None;
+    }
+    else{
+        command.trigger(GameOver::Loose(EnemyType::Doordash));
+        **doordash = Doordash::Death;
+    }
+}
