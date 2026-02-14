@@ -3,6 +3,7 @@ use bevy::state::commands;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
+use crate::game::enemies::dino::{Dino, KitchenWindowClosed};
 use crate::game::rooms::{Background, Room, RoomComponent, room};
 use crate::input_manager::Action;
 use crate::screens::Screen;
@@ -59,7 +60,20 @@ fn spawn_room(mut commands: Commands) {
 
 fn set_background(
     mut sprite: Single<&mut Sprite, With<Background>>,
+    dino: Single<&Dino>,
+    window: Res<KitchenWindowClosed>,
     assets: If<Res<KitchenWindowAssets>>,
 ) {
-    sprite.set_image(&assets.dino_gone);
+    if window.0 {
+        sprite.set_image(&assets.closed_window);
+        return;
+    }
+
+    sprite.set_image(match **dino {
+        Dino::Gone => &assets.dino_gone,
+        Dino::Far => &assets.dino_far,
+        Dino::Near => &assets.dino_near,
+        Dino::Stalk => &assets.dino_stalk,
+        Dino::Death => &assets.dino_gone,
+    });
 }

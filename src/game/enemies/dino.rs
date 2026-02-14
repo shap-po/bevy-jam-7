@@ -1,19 +1,21 @@
 use bevy::{prelude::*, transform::components};
-use rand::prelude::*; //rand::random_bool(1.0)
 
-use crate::game::{enemies::{Difficulty, Enemy, EnemyTicked, EnemyType}, events::GameOver};
+use crate::game::{
+    enemies::{Difficulty, Enemy, EnemyTicked, EnemyType},
+    events::GameOver,
+};
 
 pub(super) fn plugin(app: &mut App) {
     app.init_resource::<KitchenWindowClosed>();
     app.add_observer(handle_opportunity);
 }
 
-#[derive(Component, Reflect, Debug)]
+#[derive(Component, Reflect, Debug, PartialEq)]
 #[reflect(Component)]
-enum Dino {
+pub enum Dino {
     Gone,
-    Away,
     Far,
+    Near,
     Stalk,
     Death,
 }
@@ -40,12 +42,12 @@ fn handle_opportunity(
     }
 
     *dino = match *dino {
-        Dino::Gone => Dino::Away,
-        Dino::Away => Dino::Far,
-        Dino::Far => Dino::Stalk,
+        Dino::Gone => Dino::Far,
+        Dino::Far => Dino::Near,
+        Dino::Near => Dino::Stalk,
         Dino::Stalk => {
             if window.0 {
-                Dino::Away
+                Dino::Gone
             } else {
                 command.trigger(GameOver::Loose(EnemyType::Dino));
                 Dino::Death
@@ -57,4 +59,4 @@ fn handle_opportunity(
 
 #[derive(Resource, Reflect, Debug, Default)]
 #[reflect(Resource)]
-pub struct KitchenWindowClosed(bool);
+pub struct KitchenWindowClosed(pub bool);
