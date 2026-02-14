@@ -19,6 +19,9 @@ mod theme;
 
 use bevy::{asset::AssetMetaCheck, prelude::*};
 
+const WINDOW_WIDTH: f32 = 1920.0;
+const WINDOW_HEIGHT: f32 = 1080.0;
+
 fn main() -> AppExit {
     App::new().add_plugins(AppPlugin).run()
 }
@@ -103,5 +106,15 @@ struct Pause(pub bool);
 struct PausableSystems;
 
 fn spawn_camera(mut commands: Commands) {
-    commands.spawn((Name::new("Camera"), Camera2d));
+    commands.spawn((
+        Name::new("Camera"),
+        Camera2d,
+        Projection::Orthographic(OrthographicProjection {
+            scaling_mode: bevy::camera::ScalingMode::AutoMin {
+                min_width: WINDOW_WIDTH,
+                min_height: WINDOW_HEIGHT,
+            },
+            ..OrthographicProjection::default_2d()
+        }),
+    ));
 }
