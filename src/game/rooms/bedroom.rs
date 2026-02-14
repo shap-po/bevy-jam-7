@@ -27,7 +27,7 @@ impl FromWorld for BedroomAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            background: assets.load("images/splash.png"), // TODO: Set image
+            background: assets.load("images/bedroom.png"),
         }
     }
 }

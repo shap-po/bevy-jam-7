@@ -22,3 +22,5 @@ This project was generated using the [Bevy New 2D](https://github.com/TheBevyFlo
 - "Fridge" (https://skfb.ly/ony7U) by Red Fox / nokillnando is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Rigged T-Rex Fabulous" (https://skfb.ly/pzWtz) by ChoochooLi Models is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Forest" (https://skfb.ly/69RVV) by rhfqcntrkf is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+- "Final Bedroom" (https://skfb.ly/6RRTn) by jspurlin is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+- "blanket test" (https://skfb.ly/67ROo) by Cécile Amstad is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
