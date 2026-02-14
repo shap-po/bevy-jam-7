@@ -1,4 +1,4 @@
-use bevy::{ecs::name, prelude::*};
+use bevy::prelude::*;
 
 use crate::screens::Screen;
 
@@ -20,6 +20,6 @@ pub fn start_game(mut commands: Commands) {
     commands.spawn((
         Name::new("Enemies"),
         DespawnOnExit(Screen::Gameplay),
-        children![enemies::dino::dino(10),],
+        children![enemies::dino::dino(10), enemies::ghost::ghost(10),],
     ));
 }
