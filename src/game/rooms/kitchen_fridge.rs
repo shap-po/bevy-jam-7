@@ -11,19 +11,19 @@ use crate::utils::SetImage;
 use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
-    app.load_resource::<KitchenAssets>();
+    app.load_resource::<KitchenFridgeAssets>();
     app.add_systems(Startup, spawn_room);
-    app.add_systems(Update, set_background.run_if(in_state(Room::Kitchen)));
+    app.add_systems(Update, set_background.run_if(in_state(Room::KitchenFridge)));
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
 #[reflect(Resource)]
-struct KitchenAssets {
+struct KitchenFridgeAssets {
     #[dependency]
     background: Handle<Image>,
 }
 
-impl FromWorld for KitchenAssets {
+impl FromWorld for KitchenFridgeAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
@@ -34,9 +34,9 @@ impl FromWorld for KitchenAssets {
 
 fn spawn_room(mut commands: Commands) {
     commands.spawn(room(
-        "Kitchen",
+        "KitchenFridge",
         RoomComponent {
-            this_room: Room::Kitchen,
+            this_room: Room::KitchenFridge,
             back_room: Some(Room::Bedroom),
             left_room: Some(Room::Bedroom),
             ..Default::default()
@@ -47,7 +47,7 @@ fn spawn_room(mut commands: Commands) {
 
 fn set_background(
     mut sprite: Single<&mut Sprite, With<Background>>,
-    assets: If<Res<KitchenAssets>>,
+    assets: If<Res<KitchenFridgeAssets>>,
 ) {
     sprite.set_image(&assets.background);
 }

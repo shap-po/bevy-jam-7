@@ -11,34 +11,36 @@ use crate::utils::SetImage;
 use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
-    app.load_resource::<KitchenAssets>();
+    app.load_resource::<BathroomWasherAssets>();
     app.add_systems(Startup, spawn_room);
-    app.add_systems(Update, set_background.run_if(in_state(Room::Kitchen)));
+    app.add_systems(
+        Update,
+        set_background.run_if(in_state(Room::BathroomWasher)),
+    );
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
 #[reflect(Resource)]
-struct KitchenAssets {
+struct BathroomWasherAssets {
     #[dependency]
     background: Handle<Image>,
 }
 
-impl FromWorld for KitchenAssets {
+impl FromWorld for BathroomWasherAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            background: assets.load("images/splash.png"), // TODO: Set image
+            background: assets.load("images/bathroom_1.png"),
         }
     }
 }
 
 fn spawn_room(mut commands: Commands) {
     commands.spawn(room(
-        "Kitchen",
+        "BathroomWasher",
         RoomComponent {
-            this_room: Room::Kitchen,
-            back_room: Some(Room::Bedroom),
-            left_room: Some(Room::Bedroom),
+            this_room: Room::BathroomWasher,
+            back_room: Some(Room::Bathroom),
             ..Default::default()
         },
         (),
@@ -47,7 +49,7 @@ fn spawn_room(mut commands: Commands) {
 
 fn set_background(
     mut sprite: Single<&mut Sprite, With<Background>>,
-    assets: If<Res<KitchenAssets>>,
+    assets: If<Res<BathroomWasherAssets>>,
 ) {
     sprite.set_image(&assets.background);
 }

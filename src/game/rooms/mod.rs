@@ -1,47 +1,171 @@
 use std::time::Duration;
 
-use bevy::prelude::*;
+use bevy::{prelude::*, render::view::visibility};
 use leafwing_input_manager::prelude::ActionState;
 
-use crate::{AppSystems, PausableSystems, input_manager::Action, screens::Screen};
+use crate::{AppSystems, PausableSystems, input_manager::Action, screens::Screen, theme::widget};
 
-mod backroom;
 mod bathroom;
+mod bathroom_washer;
 mod bedroom;
+mod bedroom_bed;
 mod hall;
 mod kitchen;
+mod kitchen_fridge;
+mod kitchen_window;
 
 pub(super) fn plugin(app: &mut App) {
     app.init_state::<Room>();
 
     app.add_plugins((
-        backroom::plugin,
         bathroom::plugin,
+        bathroom_washer::plugin,
         bedroom::plugin,
+        bedroom_bed::plugin,
         hall::plugin,
         kitchen::plugin,
+        kitchen_fridge::plugin,
+        kitchen_window::plugin,
     ));
+
+    app.add_systems(Startup, create_background);
+    app.add_systems(Update, show_background);
+
     app.add_systems(
         Update,
-        go_back
+        navigate
             .in_set(AppSystems::HandleInput)
             .in_set(PausableSystems)
-            .run_if(in_state(Screen::Gameplay).and(not(in_state(Room::Bedroom)))),
+            .run_if(in_state(Screen::Gameplay)),
     );
+    app.add_systems(
+        Update,
+        show_room
+            .in_set(AppSystems::Update)
+            .run_if(in_state(Screen::Gameplay)),
+    );
+
+    #[cfg(debug_assertions)]
+    app.add_systems(PostStartup, room_check);
 }
 
-#[derive(States, Copy, Clone, Eq, PartialEq, Hash, Debug, Default)]
+#[derive(States, Copy, Clone, Eq, PartialEq, Hash, Debug, Default, Reflect)]
 pub enum Room {
     #[default]
     Bedroom,
+    BedroomBed,
+
     Bathroom,
+    BathroomWasher,
+
     Hall,
+
     Kitchen,
-    Backroom,
+    KitchenWindow,
+    KitchenFridge,
 }
 
-fn go_back(input: Single<&ActionState<Action>>, mut next_screen: ResMut<NextState<Room>>) {
-    if input.just_pressed(&Action::Back) {
-        next_screen.set(Room::Bedroom);
+#[derive(Component, Reflect, Debug, Default)]
+#[reflect(Component)]
+struct RoomComponent {
+    this_room: Room,
+    // WASD navigation
+    forward_room: Option<Room>,
+    back_room: Option<Room>,
+    left_room: Option<Room>,
+    right_room: Option<Room>,
+}
+
+impl RoomComponent {
+    fn is(&self, room: Room) -> bool {
+        self.this_room == room
+    }
+}
+
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+struct Background;
+
+fn create_background(mut commands: Commands) {
+    commands.spawn((Name::new("Background"), Background, Sprite::default()));
+}
+
+#[rustfmt::skip]
+fn room(name: &'static str, room: RoomComponent, additional: impl Bundle) -> impl Bundle {
+    (
+        Name::new(name),
+        Visibility::Hidden,
+        room,
+        additional,
+    )
+}
+
+fn navigate(
+    input: Single<&ActionState<Action>>,
+    room_query: Query<&RoomComponent>,
+    current_room: Res<State<Room>>,
+    mut next_room: ResMut<NextState<Room>>,
+) {
+    let Some(room) = room_query.iter().find(|r| r.is(**current_room)) else {
+        return;
+    };
+
+    let direction = if input.just_pressed(&Action::Forward) {
+        room.forward_room
+    } else if input.just_pressed(&Action::Back) {
+        room.back_room
+    } else if input.just_pressed(&Action::Left) {
+        room.left_room
+    } else if input.just_pressed(&Action::Right) {
+        room.right_room
+    } else {
+        None
+    };
+
+    if let Some(room) = direction {
+        #[cfg(debug_assertions)]
+        if room_query.iter().find(|r| r.is(room)).is_none() {
+            warn!(
+                "Tried to enter room {:?} that does not have an implementation",
+                room
+            );
+            return;
+        };
+
+        next_room.set(room);
+    }
+}
+
+fn show_room(current_room: Res<State<Room>>, query: Query<(&RoomComponent, &mut Visibility)>) {
+    for (room, mut visibility) in query {
+        *visibility = if room.is(**current_room) {
+            Visibility::Visible
+        } else {
+            Visibility::Hidden
+        };
+    }
+}
+
+fn show_background(
+    current_screen: Res<State<Screen>>,
+    mut visibility: Single<&mut Visibility, With<Background>>,
+) {
+    **visibility = if **current_screen == Screen::Gameplay {
+        Visibility::Visible
+    } else {
+        Visibility::Hidden
+    }
+}
+
+#[cfg(debug_assertions)]
+fn room_check(query: Query<&RoomComponent>) {
+    let mut used_rooms: Vec<Room> = Vec::new();
+    for room in query {
+        let room = room.this_room;
+        if used_rooms.contains(&room) {
+            warn!("Found duplicate room: {:?}", room);
+        } else {
+            used_rooms.push(room);
+        }
     }
 }

@@ -1,29 +1,19 @@
 use bevy::prelude::*;
+use bevy::state::commands;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
-use crate::game::rooms::Room;
+use crate::game::rooms::{Background, Room, RoomComponent, room};
 use crate::input_manager::Action;
 use crate::screens::Screen;
 use crate::theme::widget;
+use crate::utils::SetImage;
 use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<BedroomAssets>();
-    // auto-enter the room once game starts
-    app.add_systems(OnEnter(Screen::Gameplay), enter_room);
-    // handle re-enter
-    app.add_systems(
-        OnEnter(Room::Bedroom),
-        enter_room.run_if(in_state(Screen::Gameplay)),
-    );
-    app.add_systems(
-        Update,
-        handle_input
-            .in_set(AppSystems::HandleInput)
-            .in_set(PausableSystems)
-            .run_if(in_state(Screen::Gameplay).and(in_state(Room::Bedroom))),
-    );
+    app.add_systems(Startup, spawn_room);
+    app.add_systems(Update, set_background.run_if(in_state(Room::Bedroom)));
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
@@ -37,29 +27,28 @@ impl FromWorld for BedroomAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            background: assets.load("images/ducky.png"),
+            background: assets.load("images/splash.png"), // TODO: Set image
         }
     }
 }
 
-fn enter_room(mut commands: Commands, room_assets: Res<BedroomAssets>) {
-    commands.spawn((
-        widget::ui_root("Bedroom"),
-        Transform::default(),
-        Visibility::default(),
-        DespawnOnExit(Room::Bedroom),
-        children![(widget::label("Bedroom"))],
+fn spawn_room(mut commands: Commands) {
+    commands.spawn(room(
+        "Bedroom",
+        RoomComponent {
+            this_room: Room::Bedroom,
+            forward_room: Some(Room::Hall),
+            back_room: Some(Room::BedroomBed),
+            left_room: Some(Room::Bathroom),
+            right_room: Some(Room::Kitchen),
+        },
+        (),
     ));
 }
 
-fn handle_input(input: Single<&ActionState<Action>>, mut next_screen: ResMut<NextState<Room>>) {
-    if input.just_pressed(&Action::Forward) {
-        next_screen.set(Room::Hall)
-    } else if input.just_pressed(&Action::Back) {
-        next_screen.set(Room::Backroom)
-    } else if input.just_pressed(&Action::Left) {
-        next_screen.set(Room::Bathroom)
-    } else if input.just_pressed(&Action::Right) {
-        next_screen.set(Room::Kitchen)
-    }
+fn set_background(
+    mut sprite: Single<&mut Sprite, With<Background>>,
+    assets: If<Res<BedroomAssets>>,
+) {
+    sprite.set_image(&assets.background);
 }

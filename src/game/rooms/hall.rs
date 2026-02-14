@@ -1,16 +1,19 @@
 use bevy::prelude::*;
+use bevy::state::commands;
+use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
-use crate::game::rooms::Room;
+use crate::game::rooms::{Background, Room, RoomComponent, room};
+use crate::input_manager::Action;
 use crate::screens::Screen;
 use crate::theme::widget;
+use crate::utils::SetImage;
+use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<HallAssets>();
-    app.add_systems(
-        OnEnter(Room::Hall),
-        enter_room.run_if(in_state(Screen::Gameplay)),
-    );
+    app.add_systems(Startup, spawn_room);
+    app.add_systems(Update, set_background.run_if(in_state(Room::Hall)));
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
@@ -18,23 +21,32 @@ pub(super) fn plugin(app: &mut App) {
 struct HallAssets {
     #[dependency]
     background: Handle<Image>,
+    #[dependency]
+    background_w_hand: Handle<Image>,
 }
 
 impl FromWorld for HallAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            background: assets.load("images/ducky.png"),
+            background: assets.load("images/hall_0.png"),
+            background_w_hand: assets.load("images/hall_1.png"),
         }
     }
 }
 
-fn enter_room(mut commands: Commands, room_assets: Res<HallAssets>) {
-    commands.spawn((
-        widget::ui_root("Hall"),
-        Transform::default(),
-        Visibility::default(),
-        DespawnOnExit(Room::Hall),
-        children![(widget::label("Hall"))],
+fn spawn_room(mut commands: Commands) {
+    commands.spawn(room(
+        "Hall",
+        RoomComponent {
+            this_room: Room::Hall,
+            back_room: Some(Room::Bedroom),
+            ..Default::default()
+        },
+        (),
     ));
+}
+
+fn set_background(mut sprite: Single<&mut Sprite, With<Background>>, assets: If<Res<HallAssets>>) {
+    sprite.set_image(&assets.background);
 }
