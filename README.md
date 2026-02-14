@@ -21,3 +21,4 @@ This project was generated using the [Bevy New 2D](https://github.com/TheBevyFlo
 - "Kitchen" (https://skfb.ly/6WupI) by Enkarra is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Fridge" (https://skfb.ly/ony7U) by Red Fox / nokillnando is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Rigged T-Rex Fabulous" (https://skfb.ly/pzWtz) by ChoochooLi Models is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+- "Forest" (https://skfb.ly/69RVV) by rhfqcntrkf is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).

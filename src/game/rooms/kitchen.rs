@@ -27,7 +27,7 @@ impl FromWorld for KitchenAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            background: assets.load("images/splash.png"), // TODO: Set image
+            background: assets.load("images/kitchen.png"),
         }
     }
 }
@@ -38,7 +38,9 @@ fn spawn_room(mut commands: Commands) {
         RoomComponent {
             this_room: Room::Kitchen,
             back_room: Some(Room::Bedroom),
+            forward_room: Some(Room::KitchenFridge),
             left_room: Some(Room::Bedroom),
+            right_room: Some(Room::KitchenWindow),
             ..Default::default()
         },
         (),
