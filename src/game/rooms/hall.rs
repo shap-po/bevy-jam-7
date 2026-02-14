@@ -3,6 +3,7 @@ use bevy::state::commands;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
+use crate::game::enemies::doordash::Doordash;
 use crate::game::rooms::{Background, Room, RoomComponent, room};
 use crate::input_manager::Action;
 use crate::screens::Screen;
@@ -47,6 +48,20 @@ fn spawn_room(mut commands: Commands) {
     ));
 }
 
-fn set_background(mut sprite: Single<&mut Sprite, With<Background>>, assets: If<Res<HallAssets>>) {
-    sprite.set_image(&assets.background);
+fn set_background(
+    mut sprite: Single<&mut Sprite, With<Background>>,
+    doordash: Single<&Doordash>,
+    assets: If<Res<HallAssets>>,
+) {
+    sprite.set_image(
+        if let Doordash::Waiting {
+            state_counter,
+            food_want,
+        } = *doordash
+        {
+            &assets.background_w_hand
+        } else {
+            &assets.background
+        },
+    );
 }
