@@ -16,6 +16,7 @@ mod input_manager;
 mod menus;
 mod screens;
 mod theme;
+pub mod utils;
 
 use bevy::{asset::AssetMetaCheck, prelude::*};
 
