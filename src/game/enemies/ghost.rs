@@ -1,4 +1,5 @@
-use crate::game::enemies::{Difficulty, Enemy, EnemyTicked};
+use crate::game::enemies::{Difficulty, Enemy, EnemyTicked, EnemyType};
+use crate::game::events::GameOver;
 use crate::game::rooms::Room;
 use bevy::{prelude::*, transform::components};
 
@@ -23,6 +24,7 @@ fn handle_opportunity(
     event: On<EnemyTicked>,
     ghost_query: Single<(Entity, &mut Ghost)>,
     room: Res<State<Room>>,
+    mut command: Commands,
 ) {
     let (entity, mut ghost) = ghost_query.into_inner();
     if entity != event.event_target() {
@@ -34,7 +36,7 @@ fn handle_opportunity(
     } else {
         ghost.0 += 1;
         if ghost.0 > 10 {
-            todo!("manamded")
+            command.trigger(GameOver::Loose(EnemyType::Ghost));
         }
     }
 }

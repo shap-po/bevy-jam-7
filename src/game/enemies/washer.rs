@@ -1,9 +1,9 @@
-use crate::game::{enemies::{Difficulty, Enemy, EnemyTicked}, rooms::Room};
+use crate::game::{enemies::{Difficulty, Enemy, EnemyTicked, EnemyType}, events::GameOver, rooms::Room};
 use bevy::{prelude::*, transform::components};
 
 pub(super) fn plugin(app: &mut App) {
-    app.init_resource::<WashingMinigameComplete>();
     app.add_observer(handle_opportunity);
+    app.add_observer(washer_complete);
 }
 
 #[derive(Component, Reflect, Debug)]
@@ -28,7 +28,7 @@ const MAXSTATES: i8 = 10;
 fn handle_opportunity(
     event: On<EnemyTicked>,
     washer_query: Single<(Entity, &mut Washer)>,
-    minigame_complete : Res<WashingMinigameComplete>,
+    mut command: Commands,
 ) {
     let (entity, mut washer) = washer_query.into_inner();
     if entity != event.event_target() {
@@ -45,20 +45,24 @@ fn handle_opportunity(
             }
         },
         Washer::Active(i) => {
-            if minigame_complete.0 {
-                Washer::Passive(0)
-            }
-            else if i > MAXSTATES {
+            if i > MAXSTATES {
+                command.trigger(GameOver::Loose(EnemyType::Washer));
                 Washer::Death
             }
             else {
                 Washer::Passive(i + 1)
             }
         },
-        Washer::Death => todo!(),
+        Washer::Death => Washer::Death,
     };
 }
 
-#[derive(Resource, Reflect, Debug, Default)]
-#[reflect(Resource)]
-pub struct WashingMinigameComplete(bool);
+#[derive(Event, Reflect, Debug, Default)]
+pub struct WashingMinigameComplete;
+
+fn washer_complete(
+    event: On<WashingMinigameComplete>,
+    mut washer: Single<&mut Washer>,
+){
+    **washer = Washer::Passive(0);
+}
