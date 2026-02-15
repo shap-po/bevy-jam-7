@@ -61,12 +61,6 @@ struct Enemy;
 #[reflect(Component)]
 struct Difficulty(i8);
 
-impl Difficulty {
-    pub fn new(difficulty: i8) -> Self {
-        Difficulty { 0: difficulty }
-    }
-}
-
 #[derive(EntityEvent, Debug)]
 pub struct EnemyTicked {
     #[event_target]

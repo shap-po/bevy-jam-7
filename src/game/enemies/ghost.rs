@@ -15,7 +15,7 @@ pub fn ghost(difficulty: i8) -> impl Bundle {
     (
         Name::new("Ghost"),
         Ghost::default(),
-        Difficulty::new(difficulty),
+        Difficulty(difficulty),
         Enemy,
     )
 }

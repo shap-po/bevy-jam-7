@@ -25,7 +25,7 @@ pub fn dino(difficulty: i8) -> impl Bundle {
     (
         Name::new("Dino"),
         Dino::Gone,
-        Difficulty::new(difficulty),
+        Difficulty(difficulty),
         Enemy,
     )
 }
