@@ -36,11 +36,11 @@ impl FromWorld for KitchenWindowAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            dino_gone: assets.load("images/kitchen_dino_gone.png"),
-            dino_far: assets.load("images/kitchen_dino_far.png"),
-            dino_near: assets.load("images/kitchen_dino_near.png"),
-            dino_stalk: assets.load("images/kitchen_dino_stalk.png"),
-            closed_window: assets.load("images/kitchen_closed_window.png"),
+            dino_gone: assets.load("images/rooms/kitchen_dino_gone.png"),
+            dino_far: assets.load("images/rooms/kitchen_dino_far.png"),
+            dino_near: assets.load("images/rooms/kitchen_dino_near.png"),
+            dino_stalk: assets.load("images/rooms/kitchen_dino_stalk.png"),
+            closed_window: assets.load("images/rooms/kitchen_closed_window.png"),
         }
     }
 }

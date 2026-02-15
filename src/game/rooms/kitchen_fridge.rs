@@ -27,7 +27,7 @@ impl FromWorld for KitchenFridgeAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            background: assets.load("images/kitchen_fridge.png"),
+            background: assets.load("images/rooms/kitchen_fridge.png"),
         }
     }
 }

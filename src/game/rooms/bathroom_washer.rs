@@ -30,7 +30,7 @@ impl FromWorld for BathroomWasherAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            background: assets.load("images/bathroom_1.png"),
+            background: assets.load("images/rooms/bathroom_1.png"),
         }
     }
 }

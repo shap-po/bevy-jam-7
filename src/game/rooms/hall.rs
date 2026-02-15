@@ -30,8 +30,8 @@ impl FromWorld for HallAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            background: assets.load("images/hall_0.png"),
-            background_w_hand: assets.load("images/hall_1.png"),
+            background: assets.load("images/rooms/hall_0.png"),
+            background_w_hand: assets.load("images/rooms/hall_1.png"),
         }
     }
 }

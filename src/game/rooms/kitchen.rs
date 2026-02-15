@@ -30,8 +30,8 @@ impl FromWorld for KitchenAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            background: assets.load("images/kitchen.png"),
-            dino_death: assets.load("images/kitchen_dino_death.png"),
+            background: assets.load("images/rooms/kitchen.png"),
+            dino_death: assets.load("images/rooms/kitchen_dino_death.png"),
         }
     }
 }
