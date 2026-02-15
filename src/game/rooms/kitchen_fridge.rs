@@ -13,7 +13,10 @@ use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<KitchenFridgeAssets>();
-    app.add_systems(Update, set_background.run_if(in_state(Room::KitchenFridge)));
+    app.add_systems(
+        Update,
+        (set_background, force_move).run_if(in_state(Room::KitchenFridge)),
+    );
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
@@ -54,4 +57,10 @@ fn set_background(
     assets: If<Res<KitchenFridgeAssets>>,
 ) {
     sprite.set_image(&assets.background);
+}
+
+fn force_move(dino: Single<&Dino>, mut next_room: ResMut<NextState<Room>>) {
+    if **dino == Dino::Death {
+        next_room.set(Room::Kitchen);
+    }
 }

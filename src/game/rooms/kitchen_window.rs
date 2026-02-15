@@ -16,7 +16,7 @@ pub(super) fn plugin(app: &mut App) {
     app.load_resource::<KitchenWindowAssets>();
     app.add_systems(
         Update,
-        (set_background, set_window).run_if(in_state(Room::KitchenWindow)),
+        (set_background, set_window, force_move).run_if(in_state(Room::KitchenWindow)),
     );
     app.add_systems(OnExit(Room::KitchenWindow), close_window);
 }
@@ -62,7 +62,7 @@ struct KitchenWindowRoom;
 #[reflect(Component)]
 struct KitchenWindow;
 
-    #[rustfmt::skip]
+#[rustfmt::skip]
 pub(super) fn room() -> impl Bundle {
     (
         KitchenWindowRoom,
@@ -131,4 +131,10 @@ where
 
 fn close_window(mut window: ResMut<KitchenWindowClosed>) {
     window.0 = false;
+}
+
+fn force_move(dino: Single<&Dino>, mut next_room: ResMut<NextState<Room>>) {
+    if **dino == Dino::Death {
+        next_room.set(Room::Kitchen);
+    }
 }

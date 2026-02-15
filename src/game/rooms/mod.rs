@@ -65,7 +65,7 @@ pub enum Room {
     KitchenFridge,
 }
 
-#[derive(Component, Reflect, Debug, Default)]
+#[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
 #[require(Visibility)]
 struct RoomComponent {
@@ -75,11 +75,48 @@ struct RoomComponent {
     back_room: Option<Room>,
     left_room: Option<Room>,
     right_room: Option<Room>,
+
+    can_move_forward: bool,
+    can_move_back: bool,
+    can_move_left: bool,
+    can_move_right: bool,
+}
+
+impl Default for RoomComponent {
+    fn default() -> Self {
+        Self {
+            this_room: Room::Bedroom,
+
+            forward_room: None,
+            back_room: None,
+            left_room: None,
+            right_room: None,
+
+            can_move_forward: true,
+            can_move_back: true,
+            can_move_left: true,
+            can_move_right: true,
+        }
+    }
 }
 
 impl RoomComponent {
     fn is(&self, room: Room) -> bool {
         self.this_room == room
+    }
+
+    fn unblock_movement(&mut self) {
+        self.can_move_forward = true;
+        self.can_move_back = true;
+        self.can_move_left = true;
+        self.can_move_right = true;
+    }
+
+    fn block_movement(&mut self) {
+        self.can_move_forward = false;
+        self.can_move_back = false;
+        self.can_move_left = false;
+        self.can_move_right = false;
     }
 }
 
@@ -112,16 +149,22 @@ fn navigate(
     mut next_room: ResMut<NextState<Room>>,
 ) {
     let Some(room) = room_query.iter().find(|r| r.is(**current_room)) else {
+        #[cfg(debug_assertions)]
+        println!(
+            "Could not find the component for {:?}; existing rooms: {:?}",
+            **current_room,
+            room_query.iter().map(|r| r.this_room).collect::<Vec<_>>()
+        );
         return;
     };
 
-    let direction = if input.just_pressed(&Action::Forward) {
+    let direction = if input.just_pressed(&Action::Forward) && room.can_move_forward {
         room.forward_room
-    } else if input.just_pressed(&Action::Back) {
+    } else if input.just_pressed(&Action::Back) && room.can_move_back {
         room.back_room
-    } else if input.just_pressed(&Action::Left) {
+    } else if input.just_pressed(&Action::Left) && room.can_move_left {
         room.left_room
-    } else if input.just_pressed(&Action::Right) {
+    } else if input.just_pressed(&Action::Right) && room.can_move_right {
         room.right_room
     } else {
         None

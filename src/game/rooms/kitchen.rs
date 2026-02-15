@@ -13,7 +13,10 @@ use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<KitchenAssets>();
-    app.add_systems(Update, set_background.run_if(in_state(Room::Kitchen)));
+    app.add_systems(
+        Update,
+        (set_background, block_movement).run_if(in_state(Room::Kitchen)),
+    );
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
@@ -64,4 +67,13 @@ fn set_background(
     } else {
         &assets.background
     });
+}
+
+fn block_movement(mut room: Single<&mut RoomComponent, With<KitchenRoom>>, dino: Single<&Dino>) {
+    if **dino == Dino::Death {
+        room.can_move_forward = false;
+        room.can_move_right = false;
+    } else {
+        room.unblock_movement();
+    }
 }
