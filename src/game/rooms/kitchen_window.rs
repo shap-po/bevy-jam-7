@@ -20,14 +20,26 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Resource)]
 struct KitchenWindowAssets {
     #[dependency]
-    background: Handle<Image>,
+    dino_gone: Handle<Image>,
+    #[dependency]
+    dino_far: Handle<Image>,
+    #[dependency]
+    dino_near: Handle<Image>,
+    #[dependency]
+    dino_stalk: Handle<Image>,
+    #[dependency]
+    closed_window: Handle<Image>,
 }
 
 impl FromWorld for KitchenWindowAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            background: assets.load("images/splash.png"), // TODO: Set image
+            dino_gone: assets.load("images/kitchen_dino_gone.png"),
+            dino_far: assets.load("images/kitchen_dino_far.png"),
+            dino_near: assets.load("images/kitchen_dino_near.png"),
+            dino_stalk: assets.load("images/kitchen_dino_stalk.png"),
+            closed_window: assets.load("images/kitchen_closed_window.png"),
         }
     }
 }
@@ -37,8 +49,8 @@ fn spawn_room(mut commands: Commands) {
         "KitchenWindow",
         RoomComponent {
             this_room: Room::KitchenWindow,
-            back_room: Some(Room::Bedroom),
-            left_room: Some(Room::Bedroom),
+            back_room: Some(Room::Kitchen),
+            left_room: Some(Room::KitchenFridge),
             ..Default::default()
         },
         (),
@@ -49,5 +61,5 @@ fn set_background(
     mut sprite: Single<&mut Sprite, With<Background>>,
     assets: If<Res<KitchenWindowAssets>>,
 ) {
-    sprite.set_image(&assets.background);
+    sprite.set_image(&assets.dino_gone);
 }
