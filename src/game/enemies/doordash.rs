@@ -3,9 +3,9 @@ use crate::game::{
     events::GameOver,
 };
 use bevy::{prelude::*, transform::components};
-use rand::{Rng, rng};
 
 pub(super) fn plugin(app: &mut App) {
+    app.init_resource::<HeldFood>();
     app.add_observer(handle_opportunity);
     app.add_observer(doordash_complete);
 }
@@ -21,16 +21,21 @@ pub enum Doordash {
 #[derive(Reflect, Debug, Default, PartialEq, Clone, Copy)]
 pub enum Food {
     #[default]
-    Cheese,
-    Pizza,
+    Apple,
+    Burrito,
+    ItalianSandwich,
+    SalamiSandwich,
+    Tralala,
 }
 
 impl Food {
     fn rand() -> Self {
-        let mut rng = rand::rng();
-        match rng.random_range(0..=1) {
-            0 => Food::Cheese,
-            _ => Food::Pizza,
+        match rand::random_range(0..=4) {
+            0 => Food::Apple,
+            1 => Food::Burrito,
+            2 => Food::ItalianSandwich,
+            3 => Food::SalamiSandwich,
+            _ => Food::Tralala,
         }
     }
 }
@@ -44,8 +49,8 @@ pub fn doordash(difficulty: i8) -> impl Bundle {
     )
 }
 
-const MAXSTATESAWAY: i8 = 2; // todo: replace with difficulty scaling
-const MAXSTATESWAITING: i8 = 5; // todo: replace with difficulty scaling
+const MAX_STATES_AWAY: i8 = 2; // todo: replace with difficulty scaling
+const MAX_STATES_WAITING: i8 = 5; // todo: replace with difficulty scaling
 
 fn handle_opportunity(
     event: On<EnemyTicked>,
@@ -59,7 +64,7 @@ fn handle_opportunity(
 
     *doordash = match *doordash {
         Doordash::Away(i) => {
-            if i > MAXSTATESAWAY {
+            if i > MAX_STATES_AWAY {
                 Doordash::Waiting {
                     state_counter: 0,
                     food_want: Food::rand(),
@@ -72,7 +77,7 @@ fn handle_opportunity(
             state_counter,
             food_want,
         } => {
-            if state_counter > MAXSTATESWAITING {
+            if state_counter > MAX_STATES_WAITING {
                 command.trigger(GameOver::Loose(EnemyType::Doordash));
                 Doordash::Death
             } else {
@@ -88,7 +93,7 @@ fn handle_opportunity(
 
 #[derive(Resource, Reflect, Debug, Default)]
 #[reflect(Resource)]
-pub struct FoodPlayer(Option<Food>);
+pub struct HeldFood(pub Option<Food>);
 
 #[derive(Event, Reflect, Debug, Default)]
 pub struct FoodBrought;
@@ -97,7 +102,7 @@ fn doordash_complete(
     event: On<FoodBrought>,
     mut doordash: Single<&mut Doordash>,
     mut command: Commands,
-    mut food_player: ResMut<FoodPlayer>,
+    mut food_player: ResMut<HeldFood>,
 ) {
     let Doordash::Waiting {
         state_counter,

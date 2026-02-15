@@ -4,7 +4,8 @@ use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
 use crate::game::enemies::dino::Dino;
-use crate::game::rooms::{Background, Room, RoomComponent};
+use crate::game::rooms::kitchen_fridge_food::FoodAssets;
+use crate::game::rooms::{Background, Room, RoomComponent, kitchen_fridge_food};
 use crate::input_manager::Action;
 use crate::screens::Screen;
 use crate::theme::widget;
@@ -40,7 +41,7 @@ impl FromWorld for KitchenFridgeAssets {
 struct KitchenFridgeRoom;
 
 #[rustfmt::skip]
-pub(super) fn room() -> impl Bundle {
+pub(super) fn room(food_assets: &FoodAssets) -> impl Bundle {
     (
         KitchenFridgeRoom,
         RoomComponent {
@@ -49,6 +50,7 @@ pub(super) fn room() -> impl Bundle {
             right_room: Some(Room::KitchenWindow),
             ..Default::default()
         },
+        kitchen_fridge_food::all_food(food_assets)
     )
 }
 

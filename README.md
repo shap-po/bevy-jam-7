@@ -24,6 +24,11 @@ This project was generated using the [Bevy New 2D](https://github.com/TheBevyFlo
 - "Forest" (https://skfb.ly/69RVV) by rhfqcntrkf is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Final Bedroom" (https://skfb.ly/6RRTn) by jspurlin is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "blanket test" (https://skfb.ly/67ROo) by Cécile Amstad is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+- "Simple salami sandwich" (https://skfb.ly/oBZpK) by Rainbow is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+- "Italian Sandwich scan LOWPOLY" (https://skfb.ly/oRJW7) by EFX is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+- "Burrito" (https://skfb.ly/oT99X) by UmangRank is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+- "Red Apple" (https://skfb.ly/6WTZv) by RPSebb is licensed under Free Standard (https://sketchfab.com/licenses).
+- "Tralalero Tralala" (https://skfb.ly/pvzVt) by Eks.Art is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 
 ### 2D stuff
 

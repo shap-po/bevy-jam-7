@@ -333,6 +333,7 @@ name = "bevy-jam-7"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "bevy_bundled_observers",
  "getrandom",
  "leafwing-input-manager",
  "rand",
@@ -522,6 +523,14 @@ dependencies = [
  "cpal",
  "rodio",
  "tracing",
+]
+
+[[package]]
+name = "bevy_bundled_observers"
+version = "0.1337.0"
+source = "git+https://github.com/fallible-algebra/bevy_observers#6737ae287ad2f31850d142f1e1e1de51f0a576be"
+dependencies = [
+ "bevy_ecs",
 ]
 
 [[package]]

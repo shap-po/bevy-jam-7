@@ -3,7 +3,10 @@ use std::time::Duration;
 use bevy::{prelude::*, render::view::visibility};
 use leafwing_input_manager::prelude::ActionState;
 
-use crate::{AppSystems, PausableSystems, input_manager::Action, screens::Screen, theme::widget};
+use crate::{
+    AppSystems, PausableSystems, game::rooms::kitchen_fridge_food::FoodAssets,
+    input_manager::Action, screens::Screen, theme::widget,
+};
 
 mod bathroom;
 mod bathroom_washer;
@@ -12,6 +15,7 @@ mod bedroom_bed;
 mod hall;
 mod kitchen;
 mod kitchen_fridge;
+mod kitchen_fridge_food;
 mod kitchen_window;
 
 pub(super) fn plugin(app: &mut App) {
@@ -25,6 +29,7 @@ pub(super) fn plugin(app: &mut App) {
         hall::plugin,
         kitchen::plugin,
         kitchen_fridge::plugin,
+        kitchen_fridge_food::plugin,
         kitchen_window::plugin,
     ));
 
@@ -124,7 +129,7 @@ impl RoomComponent {
 #[reflect(Component)]
 struct Background;
 
-fn startup(mut commands: Commands) {
+fn startup(mut commands: Commands, food_assets: Res<FoodAssets>) {
     commands.spawn((Name::new("Background"), Background, Sprite::default()));
     commands.spawn((
         Name::new("Rooms"),
@@ -137,7 +142,7 @@ fn startup(mut commands: Commands) {
             bedroom_bed::room(),
             hall::room(),
             kitchen::room(),
-            kitchen_fridge::room(),
+            kitchen_fridge::room(&food_assets),
             kitchen_window::room(),
         ],
     ));
