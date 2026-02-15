@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use bevy::sprite::Anchor;
 use bevy::state::commands;
+use bevy_bundled_observers::observers;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
@@ -55,25 +56,23 @@ pub(super) fn room() -> impl Bundle {
             back_room: Some(Room::Bathroom),
             ..Default::default()
         },
-        Children::spawn(SpawnWith(|parent: &mut ChildSpawner| {
-            parent.spawn(
-                (
-                    WasherSprite,
-                    Sprite::default(),
-                    Pickable::default(),
-                ),
-            )
-            .observe(update_washer::<Pointer<Press>>());
-            parent.spawn(
-                (
-                    WasherText,
-                    Anchor(Vec2 { x: 0.5, y: -2.0 }),
-                    Text2d::new("00:00"),
-                    TextColor::BLACK,
-                    TextFont::from_font_size(40.0),
-                ),
-            );
-        })),
+        children![
+            (
+                WasherSprite,
+                Sprite::default(),
+                Pickable::default(),
+                observers![
+                    update_washer::<Pointer<Press>>(),
+                ],
+            ),
+            (
+                WasherText,
+                Anchor(Vec2 { x: 0.5, y: -2.0 }),
+                Text2d::new("00:00"),
+                TextColor::BLACK,
+                TextFont::from_font_size(40.0),
+            ),
+        ],
     )
 }
 

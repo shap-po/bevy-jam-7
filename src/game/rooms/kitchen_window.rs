@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use bevy::state::commands;
 use bevy::window::WindowClosed;
+use bevy_bundled_observers::observers;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
@@ -72,19 +73,18 @@ pub(super) fn room() -> impl Bundle {
             left_room: Some(Room::KitchenFridge),
             ..Default::default()
         },
-        Children::spawn(SpawnWith(|parent: &mut ChildSpawner| {
-            parent
-                .spawn(
-                    (
-                        KitchenWindow,
-                        Sprite::default(),
-                        Pickable::default(),
-                    ),
-                )
-                .observe(update_window::<Pointer<Press>>(true))
-                .observe(update_window::<Pointer<Release>>(false))
-                .observe(update_window::<Pointer<Out>>(false));
-        })),
+        children![
+            (
+                KitchenWindow,
+                Sprite::default(),
+                Pickable::default(),
+                observers![
+                    update_window::<Pointer<Press>>(true),
+                    update_window::<Pointer<Release>>(false),
+                    update_window::<Pointer<Out>>(false),
+                ],
+            ),
+        ],
     )
 }
 
