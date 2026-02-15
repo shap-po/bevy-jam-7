@@ -20,7 +20,7 @@ pub(super) fn plugin(app: &mut App) {
         washer::plugin,
         ghost::plugin,
     ));
-    app.insert_resource(EnemyOpportunity::new());
+    app.init_resource::<EnemyOpportunity>();
     app.add_systems(
         Update,
         (
@@ -34,15 +34,13 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-#[derive(Resource, Reflect, Debug, Default)]
+#[derive(Resource, Reflect, Debug)]
 #[reflect(Resource)]
 struct EnemyOpportunity(Timer);
 
-impl EnemyOpportunity {
-    fn new() -> Self {
-        Self {
-            0: Timer::new(OPPORTUNITY_TIMER_DURATION, TimerMode::Repeating),
-        }
+impl Default for EnemyOpportunity {
+    fn default() -> Self {
+        Self(Timer::new(OPPORTUNITY_TIMER_DURATION, TimerMode::Repeating))
     }
 }
 
