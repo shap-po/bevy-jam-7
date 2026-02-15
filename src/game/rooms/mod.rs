@@ -67,7 +67,7 @@ pub enum Room {
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-#[require(Visibility::Hidden)]
+#[require(Visibility::Hidden, Transform)]
 struct RoomComponent {
     this_room: Room,
     // WASD navigation
@@ -128,6 +128,7 @@ fn startup(mut commands: Commands) {
     commands.spawn((Name::new("Background"), Background, Sprite::default()));
     commands.spawn((
         Name::new("Rooms"),
+        Transform::default(),
         Visibility::Visible,
         children![
             bathroom::room(),

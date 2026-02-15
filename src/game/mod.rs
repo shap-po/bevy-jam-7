@@ -21,6 +21,7 @@ pub fn start_game(mut commands: Commands) {
     commands.spawn((
         Name::new("Enemies"),
         DespawnOnExit(Screen::Gameplay),
+        Transform::default(),
         children![
             enemies::dino::dino(10),
             enemies::ghost::ghost(10),
