@@ -40,7 +40,7 @@ pub(super) fn room() -> impl Bundle {
             back_room: Some(Room::Bedroom),
             ..Default::default()
         },
-    );
+    )
 }
 
 fn set_background(
