@@ -1,7 +1,7 @@
 use bevy::{prelude::*, transform::components};
 use rand::prelude::*; //rand::random_bool(1.0)
 
-use crate::game::{enemies::{Difficulty, Enemy, EnemyTicked, EnemyType}, events::GameOver};
+use crate::{audio::{self, PlaySfx, Sfxlib}, game::{enemies::{Difficulty, Enemy, EnemyTicked, EnemyType}, events::GameOver}};
 
 pub(super) fn plugin(app: &mut App) {
     app.init_resource::<KitchenWindowClosed>();
@@ -32,13 +32,13 @@ fn handle_opportunity(
     event: On<EnemyTicked>,
     dino_query: Single<(Entity, &mut Dino)>,
     window: Res<KitchenWindowClosed>,
+    assets: Res<Sfxlib>,
     mut command: Commands,
 ) {
     let (entity, mut dino) = dino_query.into_inner();
     if entity != event.event_target() {
         return;
     }
-
     *dino = match *dino {
         Dino::Gone => Dino::Away,
         Dino::Away => Dino::Far,
