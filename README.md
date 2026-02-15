@@ -28,3 +28,14 @@ This project was generated using the [Bevy New 2D](https://github.com/TheBevyFlo
 ### 2D stuff
 
 - [Frosted Screen Effect](https://squaremeapixel.itch.io/frosted-screen-effect) by [ScratchBattles](https://squaremeapixel.itch.io/)
+
+### Audio
+
+- Warrick_Lendon (Freesound) (https://pixabay.com/sound-effects/household-curtain-open-and-closing-38334/)
+- Bandslam33 (Freesound) (https://pixabay.com/sound-effects/film-special-effects-running-on-grass-26845/)
+- hgseidl (Freesound) (https://pixabay.com/sound-effects/household-fridge-101099/)
+- Sonoptic (Freesound) (https://pixabay.com/sound-effects/household-ticking-clock-1-27477/)
+- EmpressNefertitiMumbi (https://pixabay.com/sound-effects/nature-forest-bird-harmonies-258412/)
+- j-tap (Freesound) (https://pixabay.com/sound-effects/household-door-open-close-45475/)
+- u_ryiem47seu (https://pixabay.com/sound-effects/film-special-effects-door-182645/)
+- dr19 (Freesound) (https://pixabay.com/sound-effects/household-fridge-open-shut-98817/)

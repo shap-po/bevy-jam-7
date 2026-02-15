@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
+use crate::asset_tracking::LoadResource;
+
 pub(super) fn plugin(app: &mut App) {
+    app.load_resource::<Sfxlib>();
     app.add_systems(
         Update,
         apply_global_volume.run_if(resource_changed::<GlobalVolume>),
@@ -40,5 +43,47 @@ fn apply_global_volume(
 ) {
     for (playback, mut sink) in &mut audio_query {
         sink.set_volume(global_volume.volume * playback.volume);
+    }
+}
+
+#[derive(Resource, Asset, Clone, Reflect)]
+#[reflect(Resource)]
+pub struct Sfxlib {
+    #[dependency]
+    pub curtains_close_1: Handle<AudioSource>,
+    #[dependency]
+    pub curtains_close_2: Handle<AudioSource>,
+    #[dependency]
+    pub curtains_close_3: Handle<AudioSource>,
+}
+
+impl FromWorld for Sfxlib {
+    fn from_world(world: &mut World) -> Self {
+        let assets = world.resource::<AssetServer>();
+        Self {
+            curtains_close_1: assets.load("audio/sound_effects/curtains_close_1.ogg"),
+            curtains_close_2: assets.load("audio/sound_effects/curtains_close_2.ogg"),
+            curtains_close_3: assets.load("audio/sound_effects/curtains_close_3.ogg"),
+        }
+    }
+}
+
+
+
+pub trait PlaySfx {
+    fn play_sfx(&mut self, handle: Handle<AudioSource>, settings: PlaybackSettings);
+    fn play_simple_sfx(&mut self, handle: Handle<AudioSource>);
+    fn play_loop_sfx(&mut self, handle: Handle<AudioSource>);
+}
+
+impl<'w, 's> PlaySfx for Commands<'w, 's> {
+    fn play_sfx(&mut self, handle: Handle<AudioSource>, settings: PlaybackSettings) {
+        self.spawn((AudioPlayer(handle), settings, SoundEffect));
+    }
+    fn play_simple_sfx(&mut self, handle: Handle<AudioSource>) {
+        self.play_sfx(handle, PlaybackSettings::DESPAWN);
+    }
+    fn play_loop_sfx(&mut self, handle: Handle<AudioSource>) {
+        self.play_sfx(handle, PlaybackSettings::LOOP);
     }
 }

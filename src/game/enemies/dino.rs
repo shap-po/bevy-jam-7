@@ -40,7 +40,6 @@ fn handle_opportunity(
     if entity != event.event_target() {
         return;
     }
-
     *dino = match *dino {
         Dino::Gone => Dino::Far,
         Dino::Far => Dino::Near,
