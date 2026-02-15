@@ -24,3 +24,7 @@ This project was generated using the [Bevy New 2D](https://github.com/TheBevyFlo
 - "Forest" (https://skfb.ly/69RVV) by rhfqcntrkf is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Final Bedroom" (https://skfb.ly/6RRTn) by jspurlin is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "blanket test" (https://skfb.ly/67ROo) by Cécile Amstad is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+
+### 2D stuff
+
+- [Frosted Screen Effect](https://squaremeapixel.itch.io/frosted-screen-effect) by [ScratchBattles](https://squaremeapixel.itch.io/)

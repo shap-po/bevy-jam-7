@@ -9,6 +9,7 @@ use crate::{AppSystems, PausableSystems, screens::Screen};
 pub(super) mod dino;
 pub(super) mod doordash;
 pub(super) mod ghost;
+mod ghost_overlay;
 pub(super) mod washer;
 
 const OPPORTUNITY_TIMER_DURATION: Duration = Duration::from_secs(5);
@@ -19,6 +20,7 @@ pub(super) fn plugin(app: &mut App) {
         doordash::plugin,
         washer::plugin,
         ghost::plugin,
+        ghost_overlay::plugin,
     ));
     app.init_resource::<EnemyOpportunity>();
     app.add_systems(

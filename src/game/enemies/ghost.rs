@@ -1,4 +1,4 @@
-use crate::game::enemies::{Difficulty, Enemy, EnemyTicked, EnemyType};
+use crate::game::enemies::{Difficulty, Enemy, EnemyTicked, EnemyType, ghost_overlay};
 use crate::game::events::GameOver;
 use crate::game::rooms::Room;
 use bevy::{prelude::*, transform::components};
@@ -7,16 +7,28 @@ pub(super) fn plugin(app: &mut App) {
     app.add_observer(handle_opportunity);
 }
 
-#[derive(Component, Reflect, Debug, Default)]
-#[reflect(Component)]
-struct Ghost(i8);
+pub const MAX_STAGE: i8 = 10;
 
+#[derive(Component, Reflect, Debug, Default, Clone, Copy)]
+#[reflect(Component)]
+pub struct Ghost(i8);
+
+impl From<Ghost> for i8 {
+    fn from(value: Ghost) -> Self {
+        value.0
+    }
+}
+
+#[rustfmt::skip]
 pub fn ghost(difficulty: i8) -> impl Bundle {
     (
         Name::new("Ghost"),
         Ghost::default(),
         Difficulty(difficulty),
         Enemy,
+        children![
+            ghost_overlay::overlay(),
+        ]
     )
 }
 
@@ -35,8 +47,9 @@ fn handle_opportunity(
         ghost.0 = 0;
     } else {
         ghost.0 += 1;
-        if ghost.0 > 10 {
+        if ghost.0 >= MAX_STAGE {
             command.trigger(GameOver::Loose(EnemyType::Ghost));
+            ghost.0 = MAX_STAGE;
         }
     }
 }
