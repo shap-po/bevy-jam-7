@@ -1,4 +1,8 @@
-use crate::game::{enemies::{Difficulty, Enemy, EnemyTicked, EnemyType}, events::GameOver, rooms::Room};
+use crate::game::{
+    enemies::{Difficulty, Enemy, EnemyTicked, EnemyType},
+    events::GameOver,
+    rooms::Room,
+};
 use bevy::{prelude::*, transform::components};
 
 pub(super) fn plugin(app: &mut App) {
@@ -8,7 +12,7 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-enum Washer{
+pub enum Washer {
     Passive(i8),
     Active(i8),
     Death,
@@ -17,7 +21,7 @@ enum Washer{
 pub fn washer(difficulty: i8) -> impl Bundle {
     (
         Name::new("Washer"),
-        Washer::Passive(0),
+        Washer::Passive(MAXSTATES),
         Difficulty::new(difficulty),
         Enemy,
     )
@@ -36,23 +40,21 @@ fn handle_opportunity(
     }
 
     *washer = match *washer {
-        Washer::Passive(i) =>  {
-            if i > MAXSTATES {
-                Washer::Active(0)
+        Washer::Passive(i) => {
+            if i <= 0 {
+                Washer::Active(MAXSTATES)
+            } else {
+                Washer::Passive(i - 1)
             }
-            else {
-                Washer::Passive(i + 1)
-            }
-        },
+        }
         Washer::Active(i) => {
-            if i > MAXSTATES {
+            if i <= 0 {
                 command.trigger(GameOver::Loose(EnemyType::Washer));
                 Washer::Death
+            } else {
+                Washer::Active(i - 1)
             }
-            else {
-                Washer::Passive(i + 1)
-            }
-        },
+        }
         Washer::Death => Washer::Death,
     };
 }
@@ -60,9 +62,6 @@ fn handle_opportunity(
 #[derive(Event, Reflect, Debug, Default)]
 pub struct WashingMinigameComplete;
 
-fn washer_complete(
-    event: On<WashingMinigameComplete>,
-    mut washer: Single<&mut Washer>,
-){
+fn washer_complete(event: On<WashingMinigameComplete>, mut washer: Single<&mut Washer>) {
     **washer = Washer::Passive(0);
 }

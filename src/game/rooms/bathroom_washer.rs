@@ -1,8 +1,10 @@
 use bevy::prelude::*;
+use bevy::sprite::Anchor;
 use bevy::state::commands;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
+use crate::game::enemies::washer::Washer;
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::input_manager::Action;
 use crate::screens::Screen;
@@ -14,7 +16,7 @@ pub(super) fn plugin(app: &mut App) {
     app.load_resource::<BathroomWasherAssets>();
     app.add_systems(
         Update,
-        set_background.run_if(in_state(Room::BathroomWasher)),
+        (set_background, set_washer, update_text).run_if(in_state(Room::BathroomWasher)),
     );
 }
 
@@ -23,16 +25,27 @@ pub(super) fn plugin(app: &mut App) {
 struct BathroomWasherAssets {
     #[dependency]
     background: Handle<Image>,
+    #[dependency]
+    washer: Handle<Image>,
 }
 
 impl FromWorld for BathroomWasherAssets {
     fn from_world(world: &mut World) -> Self {
         let assets = world.resource::<AssetServer>();
         Self {
-            background: assets.load("images/rooms/bathroom_1.png"),
+            background: assets.load("images/rooms/bathroom_washer.png"),
+            washer: assets.load("images/rooms/prop/washer.png"),
         }
     }
 }
+
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+struct WasherSprite;
+
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+struct WasherText;
 
 #[rustfmt::skip]
 pub(super) fn room() -> impl Bundle {
@@ -42,6 +55,20 @@ pub(super) fn room() -> impl Bundle {
             back_room: Some(Room::Bathroom),
             ..Default::default()
         },
+        children![
+            (
+                WasherSprite,
+                Sprite::default(),
+                Pickable::default(),
+            ),
+            (
+                WasherText,
+                Anchor(Vec2 { x: 0.5, y: -2.0 }),
+                Text2d::new("00:00"),
+                TextColor::BLACK,
+                TextFont::from_font_size(40.0),
+            )
+        ],
     )
 }
 
@@ -50,4 +77,19 @@ fn set_background(
     assets: If<Res<BathroomWasherAssets>>,
 ) {
     sprite.set_image(&assets.background);
+}
+
+fn set_washer(
+    mut sprite: Single<&mut Sprite, With<WasherSprite>>,
+    assets: If<Res<BathroomWasherAssets>>,
+) {
+    sprite.set_image(&assets.washer);
+}
+
+fn update_text(mut text: Single<&mut Text2d, With<WasherText>>, washer: Single<&Washer>) {
+    text.0 = match **washer {
+        Washer::Passive(time) => format!("{:>2}:00", time),
+        Washer::Active(_) => "!!!!".to_string(),
+        Washer::Death => "boom".to_string(),
+    }
 }

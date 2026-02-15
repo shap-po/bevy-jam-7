@@ -67,7 +67,7 @@ pub enum Room {
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-#[require(Visibility)]
+#[require(Visibility::Hidden)]
 struct RoomComponent {
     this_room: Room,
     // WASD navigation
