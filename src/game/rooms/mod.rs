@@ -28,7 +28,7 @@ pub(super) fn plugin(app: &mut App) {
         kitchen_window::plugin,
     ));
 
-    app.add_systems(Startup, create_background);
+    app.add_systems(Startup, startup);
     app.add_systems(Update, show_background);
 
     app.add_systems(
@@ -67,6 +67,7 @@ pub enum Room {
 
 #[derive(Component, Reflect, Debug, Default)]
 #[reflect(Component)]
+#[require(Visibility)]
 struct RoomComponent {
     this_room: Room,
     // WASD navigation
@@ -86,18 +87,22 @@ impl RoomComponent {
 #[reflect(Component)]
 struct Background;
 
-fn create_background(mut commands: Commands) {
+fn startup(mut commands: Commands) {
     commands.spawn((Name::new("Background"), Background, Sprite::default()));
-}
-
-#[rustfmt::skip]
-fn room(name: &'static str, room: RoomComponent, additional: impl Bundle) -> impl Bundle {
-    (
-        Name::new(name),
-        Visibility::Hidden,
-        room,
-        additional,
-    )
+    commands.spawn((
+        Name::new("Rooms"),
+        Visibility::Visible,
+        children![
+            bathroom::room(),
+            bathroom_washer::room(),
+            bedroom::room(),
+            bedroom_bed::room(),
+            hall::room(),
+            kitchen::room(),
+            kitchen_fridge::room(),
+            kitchen_window::room(),
+        ],
+    ));
 }
 
 fn navigate(

@@ -5,7 +5,7 @@ use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
 use crate::game::enemies::dino::{Dino, KitchenWindowClosed};
-use crate::game::rooms::{Background, Room, RoomComponent, room};
+use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::input_manager::Action;
 use crate::screens::Screen;
 use crate::theme::widget;
@@ -14,7 +14,6 @@ use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<KitchenWindowAssets>();
-    app.add_systems(Startup, spawn_room);
     app.add_systems(
         Update,
         (set_background, set_window).run_if(in_state(Room::KitchenWindow)),
@@ -57,12 +56,16 @@ impl FromWorld for KitchenWindowAssets {
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
+struct KitchenWindowRoom;
+
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
 struct KitchenWindow;
 
-fn spawn_room(mut commands: Commands) {
     #[rustfmt::skip]
-    commands.spawn(room(
-        "KitchenWindow",
+pub(super) fn room() -> impl Bundle {
+    (
+        KitchenWindowRoom,
         RoomComponent {
             this_room: Room::KitchenWindow,
             back_room: Some(Room::Kitchen),
@@ -82,7 +85,7 @@ fn spawn_room(mut commands: Commands) {
                 .observe(update_window::<Pointer<Release>>(false))
                 .observe(update_window::<Pointer<Out>>(false));
         })),
-    ));
+    )
 }
 
 fn set_background(

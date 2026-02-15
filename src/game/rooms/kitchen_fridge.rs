@@ -3,7 +3,8 @@ use bevy::state::commands;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
-use crate::game::rooms::{Background, Room, RoomComponent, room};
+use crate::game::enemies::dino::Dino;
+use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::input_manager::Action;
 use crate::screens::Screen;
 use crate::theme::widget;
@@ -12,7 +13,6 @@ use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<KitchenFridgeAssets>();
-    app.add_systems(Startup, spawn_room);
     app.add_systems(Update, set_background.run_if(in_state(Room::KitchenFridge)));
 }
 
@@ -32,17 +32,21 @@ impl FromWorld for KitchenFridgeAssets {
     }
 }
 
-fn spawn_room(mut commands: Commands) {
-    commands.spawn(room(
-        "KitchenFridge",
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+struct KitchenFridgeRoom;
+
+#[rustfmt::skip]
+pub(super) fn room() -> impl Bundle {
+    (
+        KitchenFridgeRoom,
         RoomComponent {
             this_room: Room::KitchenFridge,
             back_room: Some(Room::Kitchen),
             right_room: Some(Room::KitchenWindow),
             ..Default::default()
         },
-        (),
-    ));
+    )
 }
 
 fn set_background(

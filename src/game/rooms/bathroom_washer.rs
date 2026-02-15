@@ -3,7 +3,7 @@ use bevy::state::commands;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
-use crate::game::rooms::{Background, Room, RoomComponent, room};
+use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::input_manager::Action;
 use crate::screens::Screen;
 use crate::theme::widget;
@@ -12,7 +12,6 @@ use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<BathroomWasherAssets>();
-    app.add_systems(Startup, spawn_room);
     app.add_systems(
         Update,
         set_background.run_if(in_state(Room::BathroomWasher)),
@@ -35,16 +34,15 @@ impl FromWorld for BathroomWasherAssets {
     }
 }
 
-fn spawn_room(mut commands: Commands) {
-    commands.spawn(room(
-        "BathroomWasher",
+#[rustfmt::skip]
+pub(super) fn room() -> impl Bundle {
+    (
         RoomComponent {
             this_room: Room::BathroomWasher,
             back_room: Some(Room::Bathroom),
             ..Default::default()
         },
-        (),
-    ));
+    )
 }
 
 fn set_background(
