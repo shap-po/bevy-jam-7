@@ -4,7 +4,7 @@ use bevy::state::commands;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
-use crate::game::enemies::washer::Washer;
+use crate::game::enemies::washer::{Washer, WashingMinigameComplete};
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::input_manager::Action;
 use crate::screens::Screen;
@@ -56,11 +56,16 @@ pub(super) fn room() -> impl Bundle {
             ..Default::default()
         },
         children![
-            (
-                WasherSprite,
-                Sprite::default(),
-                Pickable::default(),
-            ),
+            Children::spawn(SpawnWith(|parent: &mut ChildSpawner| {
+                parent.spawn(
+                    (
+                        WasherSprite,
+                        Sprite::default(),
+                        Pickable::default(),
+                    ),
+                )
+                .observe(update_washer::<Pointer<Press>>());
+            })),
             (
                 WasherText,
                 Anchor(Vec2 { x: 0.5, y: -2.0 }),
@@ -91,5 +96,20 @@ fn update_text(mut text: Single<&mut Text2d, With<WasherText>>, washer: Single<&
         Washer::Passive(time) => format!("{:>2}:00", time),
         Washer::Active(_) => "!!!!".to_string(),
         Washer::Death => "boom".to_string(),
+    }
+}
+
+fn update_washer<E>() -> impl Fn(On<E>, Query<&Sprite>, Commands, Single<&Washer>)
+where
+    E: EntityEvent + std::fmt::Debug + Clone + Reflect,
+{
+    move |ev, sprites, mut commands, washer| {
+        let Ok(sprite) = sprites.get(ev.event_target()) else {
+            return;
+        };
+        let Washer::Active(_) = **washer else {
+            return;
+        };
+        commands.trigger(WashingMinigameComplete);
     }
 }
