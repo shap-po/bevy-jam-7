@@ -1,22 +1,33 @@
 use std::time::Duration;
 
+#[cfg(debug_assertions)]
+use bevy::input::common_conditions::input_just_pressed;
 use bevy::prelude::*;
 
 use crate::{AppSystems, PausableSystems, screens::Screen};
 
 pub(super) mod dino;
 pub(super) mod doordash;
-pub(super) mod washer;
 pub(super) mod ghost;
+pub(super) mod washer;
 
 const OPPORTUNITY_TIMER_DURATION: Duration = Duration::from_secs(5);
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins((dino::plugin, doordash::plugin, washer::plugin, ghost::plugin,));
+    app.add_plugins((
+        dino::plugin,
+        doordash::plugin,
+        washer::plugin,
+        ghost::plugin,
+    ));
     app.insert_resource(EnemyOpportunity::new());
     app.add_systems(
         Update,
-        enemy_tick
+        (
+            #[cfg(debug_assertions)]
+            dev_enemy_tick.run_if(input_just_pressed(KeyCode::KeyT)),
+            enemy_tick,
+        )
             .run_if(in_state(Screen::Gameplay))
             .in_set(AppSystems::Update)
             .in_set(PausableSystems),
@@ -84,4 +95,14 @@ fn enemy_tick(
             commands.trigger(EnemyTicked { entity });
         }
     }
+}
+
+#[cfg(debug_assertions)]
+fn dev_enemy_tick(mut commands: Commands, mut enemy_query: Query<(Entity, &Enemy, &Difficulty)>) {
+    for (entity, enemy, difficulty) in &mut enemy_query {
+        if rand::random_range(0.0..=20.0) < difficulty.0.into() {
+            commands.trigger(EnemyTicked { entity });
+        }
+    }
+    println!("Dev ticked enemies");
 }
