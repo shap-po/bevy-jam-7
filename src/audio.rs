@@ -97,6 +97,12 @@ pub struct Sfxlib {
     pub washer_beep: Handle<AudioSource>,
     #[dependency]
     pub window_broke_in: Handle<AudioSource>,
+    #[dependency]
+    pub item_pickup: Handle<AudioSource>,
+    #[dependency]
+    pub boom: Handle<AudioSource>,
+    #[dependency]
+    pub freeze: Handle<AudioSource>,
     
     
 }
@@ -129,6 +135,9 @@ impl FromWorld for Sfxlib {
             washer_outro: assets.load("audio/sound_effects/washer_outro.ogg"),
             washer_beep: assets.load("audio/sound_effects/washer_beep.ogg"),
             window_broke_in: assets.load("audio/sound_effects/window_broke_in.ogg"),
+            item_pickup: assets.load("audio/sound_effects/item_pickup.ogg"),
+            boom: assets.load("audio/sound_effects/boom.ogg"),
+            freeze: assets.load("audio/sound_effects/freezing.ogg"),
         }
     }
 }
@@ -154,7 +163,7 @@ impl Sfxlib {
             _ => self.curtains_close_3.clone(),
             }
     }
-    pub fn rand_spooky_sfx(&self) -> Handle<AudioSource>{
+    pub fn rand_doordash_sfx(&self) -> Handle<AudioSource>{
         match rand::random_range(0..=1) {
             0 => self.spooky_sfx_1.clone(),
             _ => self.spooky_sfx_1.clone(),

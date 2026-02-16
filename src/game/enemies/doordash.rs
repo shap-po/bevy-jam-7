@@ -1,7 +1,7 @@
-use crate::game::{
+use crate::{audio::{PlaySfx, Sfxlib}, game::{
     enemies::{Difficulty, Enemy, EnemyTicked, EnemyType, doordash},
     events::GameOver,
-};
+}};
 use bevy::{prelude::*, transform::components};
 
 pub(super) fn plugin(app: &mut App) {
@@ -55,6 +55,7 @@ const MAX_STATES_WAITING: i8 = 5; // todo: replace with difficulty scaling
 fn handle_opportunity(
     event: On<EnemyTicked>,
     doordash_query: Single<(Entity, &mut Doordash)>,
+    sfx_assets: Res<Sfxlib>,
     mut command: Commands,
 ) {
     let (entity, mut doordash) = doordash_query.into_inner();
@@ -65,6 +66,7 @@ fn handle_opportunity(
     *doordash = match *doordash {
         Doordash::Away(i) => {
             if i > MAX_STATES_AWAY {
+                command.play_volume_sfx(sfx_assets.rand_doordash_sfx(), 0.05);
                 Doordash::Waiting {
                     state_counter: 0,
                     food_want: Food::rand(),
@@ -103,6 +105,7 @@ fn doordash_complete(
     mut doordash: Single<&mut Doordash>,
     mut command: Commands,
     mut held_food: ResMut<HeldFood>,
+    sfx_assets: Res<Sfxlib>,
 ) {
     let Doordash::Waiting {
         state_counter,
@@ -120,6 +123,7 @@ fn doordash_complete(
 
     held_food.0 = None;
     if food == food_want {
+        command.play_volume_sfx(sfx_assets.fridge_close_1.clone(), 0.5);
         **doordash = Doordash::Away(0);
     } else {
         command.trigger(GameOver::Death(EnemyType::Doordash));
