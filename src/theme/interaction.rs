@@ -45,7 +45,7 @@ where
             return;
         };
 
-        *bg = color_getter(&palette).into();
+        *bg = color_getter(palette).into();
     }
 }
 
@@ -60,6 +60,6 @@ where
             return;
         };
 
-        *text = color_getter(&palette).into();
+        *text = color_getter(palette).into();
     }
 }
