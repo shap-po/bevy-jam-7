@@ -2,12 +2,17 @@ use std::time::Duration;
 
 use bevy::prelude::*;
 
-use crate::{AppSystems, PausableSystems, game::events::GameOver, screens::Screen};
+use crate::{
+    AppSystems, PausableSystems,
+    game::{events::GameOver, save::GameState},
+    screens::Screen,
+};
 
 pub mod enemies;
 pub mod events;
 mod interactions;
 mod rooms;
+pub mod save;
 
 const GAME_DURATION: Duration = Duration::from_secs(5 * 60);
 
@@ -20,6 +25,7 @@ pub(super) fn plugin(app: &mut App) {
         enemies::plugin,
         events::plugin,
         interactions::plugin,
+        save::plugin,
     ));
 
     app.add_systems(OnEnter(Screen::Gameplay), reset_timer);
@@ -32,17 +38,51 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-pub fn start_game(mut commands: Commands) {
+struct DifficultyBundle {
+    dino: i8,
+    ghost: i8,
+    doordash: i8,
+    washer: i8,
+}
+
+pub fn start_game(mut commands: Commands, game_state: Res<GameState>) {
+    let difficulty = match game_state.night {
+        1 => DifficultyBundle {
+            dino: 3,
+            ghost: 2,
+            doordash: 0,
+            washer: 2,
+        },
+        2 => DifficultyBundle {
+            dino: 6,
+            ghost: 4,
+            doordash: 2,
+            washer: 4,
+        },
+        3 => DifficultyBundle {
+            dino: 8,
+            ghost: 10,
+            doordash: 6,
+            washer: 8,
+        },
+        _ => DifficultyBundle {
+            dino: 15,
+            ghost: 15,
+            doordash: 15,
+            washer: 15,
+        },
+    };
+
     commands.spawn((
         Name::new("Enemies"),
         DespawnOnExit(Screen::Gameplay),
         Transform::default(),
         Visibility::Inherited,
         children![
-            enemies::dino::dino(10),
-            enemies::ghost::ghost(10),
-            enemies::doordash::doordash(10),
-            enemies::washer::washer(10),
+            enemies::dino::dino(difficulty.dino),
+            enemies::ghost::ghost(difficulty.ghost),
+            enemies::doordash::doordash(difficulty.doordash),
+            enemies::washer::washer(difficulty.washer),
         ],
     ));
 }
