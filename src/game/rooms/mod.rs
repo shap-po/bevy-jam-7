@@ -23,9 +23,11 @@ mod kitchen;
 mod kitchen_fridge;
 mod kitchen_fridge_food;
 mod kitchen_window;
+mod transition;
 
 pub(super) fn plugin(app: &mut App) {
     app.init_state::<Room>();
+    app.init_resource::<RoomTransition>();
 
     app.add_plugins((
         bathroom::plugin,
@@ -37,6 +39,7 @@ pub(super) fn plugin(app: &mut App) {
         kitchen_fridge::plugin,
         kitchen_fridge_food::plugin,
         kitchen_window::plugin,
+        transition::plugin,
     ));
 
     app.add_systems(Startup, spawn_background);
@@ -52,7 +55,7 @@ pub(super) fn plugin(app: &mut App) {
     );
     app.add_systems(
         Update,
-        show_room
+        (show_room, apply_room_transition)
             .in_set(AppSystems::Update)
             .run_if(in_state(Screen::Gameplay)),
     );
@@ -60,6 +63,8 @@ pub(super) fn plugin(app: &mut App) {
     #[cfg(debug_assertions)]
     app.add_systems(OnEnter(Screen::Gameplay), room_check.after(spawn_rooms));
 }
+
+const ROOM_TRANSITION_DURATION: Duration = Duration::from_millis(800);
 
 #[derive(States, Copy, Clone, Eq, PartialEq, Hash, Debug, Default, Reflect)]
 pub enum Room {
@@ -75,6 +80,24 @@ pub enum Room {
     Kitchen,
     KitchenWindow,
     KitchenFridge,
+
+    Transition,
+}
+
+#[derive(Resource, Reflect, Debug)]
+#[reflect(Resource)]
+struct RoomTransition {
+    next_room: Option<Room>,
+    timer: Timer,
+}
+
+impl Default for RoomTransition {
+    fn default() -> Self {
+        Self {
+            next_room: None,
+            timer: Timer::new(ROOM_TRANSITION_DURATION, TimerMode::Once),
+        }
+    }
 }
 
 #[derive(Component, Reflect, Debug)]
@@ -160,6 +183,7 @@ fn spawn_rooms(
             kitchen::room(),
             kitchen_fridge::room(&food_assets),
             kitchen_window::room(),
+            transition::room(),
         ],
     ));
 }
@@ -169,11 +193,11 @@ fn navigate(
     room_query: Query<&RoomComponent>,
     current_room: Res<State<Room>>,
     mut next_room: ResMut<NextState<Room>>,
+    mut room_transition: ResMut<RoomTransition>,
     sfx_asset: Res<Sfxlib>,
     mut commands: Commands,
 ) {
     let Some(room) = room_query.iter().find(|r| r.is(**current_room)) else {
-        #[cfg(debug_assertions)]
         println!(
             "Could not find the component for {:?}; existing rooms: {:?}",
             **current_room,
@@ -204,7 +228,11 @@ fn navigate(
             return;
         };
 
-        next_room.set(new_room);
+        next_room.set(Room::Transition);
+        room_transition.next_room = Some(new_room);
+        room_transition.timer.reset();
+        room_transition.timer.unpause();
+
         let curr_room = room.this_room;
         if (new_room == Room::Bedroom && curr_room != Room::BedroomBed)
             || (curr_room == Room::Bedroom && new_room != Room::BedroomBed)
@@ -261,6 +289,26 @@ fn room_check(query: Query<&RoomComponent>) {
     }
 }
 
-fn reset_room(mut next_room: ResMut<NextState<Room>>) {
+fn reset_room(mut next_room: ResMut<NextState<Room>>, mut room_transition: ResMut<RoomTransition>) {
     next_room.set(Room::Bedroom);
+    room_transition.next_room = None;
+    room_transition.timer.reset();
+}
+
+fn apply_room_transition(
+    mut next_room: ResMut<NextState<Room>>,
+    mut room_transition: ResMut<RoomTransition>,
+    time: Res<Time>,
+) {
+    let Some(room) = room_transition.next_room else {
+        return;
+    };
+
+    room_transition.timer.tick(time.delta());
+    if !room_transition.timer.is_finished() {
+        return;
+    }
+
+    next_room.set(room);
+    room_transition.next_room = None;
 }
