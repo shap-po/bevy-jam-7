@@ -23,6 +23,8 @@ impl From<Ghost> for i8 {
 pub fn ghost(difficulty: i8) -> impl Bundle {
     (
         Name::new("Ghost"),
+        Transform::default(),
+        Visibility::Inherited,
         Ghost::default(),
         Difficulty(difficulty),
         Enemy,
