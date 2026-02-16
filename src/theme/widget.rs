@@ -122,7 +122,7 @@ where
                     children![(
                         Name::new("Button Text"),
                         Text(text),
-                        TextFont::from_font_size(40.0),
+                        TextFont::from_font_size(BUTTON_TEXT_SIZE),
                         TextColor(BUTTON_TEXT),
                         TextColorPalette {
                             none: BUTTON_TEXT,

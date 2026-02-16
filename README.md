@@ -29,6 +29,8 @@ This project was generated using the [Bevy New 2D](https://github.com/TheBevyFlo
 - "Burrito" (https://skfb.ly/oT99X) by UmangRank is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 - "Red Apple" (https://skfb.ly/6WTZv) by RPSebb is licensed under Free Standard (https://sketchfab.com/licenses).
 - "Tralalero Tralala" (https://skfb.ly/pvzVt) by Eks.Art is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+- "Forest Diorama" (https://skfb.ly/6YrBL) by Khadka Niyash is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+- Sky box (https://blend-exchange.com/b/P2bxx0kz/).
 
 ### 2D stuff
 

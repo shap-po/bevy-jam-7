@@ -8,14 +8,50 @@ use crate::{
 };
 
 pub(super) fn plugin(app: &mut App) {
+    app.init_resource::<MainMenuAssets>();
     app.add_systems(OnEnter(Menu::Main), spawn_main_menu);
 }
 
-fn spawn_main_menu(mut commands: Commands, game_state: Res<GameState>) {
+#[derive(Resource, Asset, Clone, Reflect)]
+#[reflect(Resource)]
+struct MainMenuAssets {
+    #[dependency]
+    background: Handle<Image>,
+}
+
+impl FromWorld for MainMenuAssets {
+    fn from_world(world: &mut World) -> Self {
+        let assets = world.resource::<AssetServer>();
+        Self {
+            background: assets.load("images/house.png"),
+        }
+    }
+}
+
+fn spawn_main_menu(
+    mut commands: Commands,
+    game_state: Res<GameState>,
+    assets: Res<MainMenuAssets>,
+) {
     commands.spawn((
-        widget::ui_root("Main Menu"),
+        (
+            Name::new("Main Menu"),
+            Node {
+                position_type: PositionType::Absolute,
+                width: percent(50),
+                height: percent(100),
+                left: percent(50),
+                align_items: AlignItems::Center,
+                justify_content: JustifyContent::Center,
+                flex_direction: FlexDirection::Column,
+                row_gap: px(10),
+                ..default()
+            },
+            Pickable::IGNORE,
+        ),
         GlobalZIndex(2),
         DespawnOnExit(Menu::Main),
+        Sprite::from_image(assets.background.clone()),
         #[cfg(not(target_family = "wasm"))]
         children![
             widget::button(
