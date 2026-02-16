@@ -22,6 +22,17 @@ pub struct FoodAssets {
     salami_sandwich: Handle<Image>,
     #[dependency]
     tralala: Handle<Image>,
+
+    #[dependency]
+    apple_thought: Handle<Image>,
+    #[dependency]
+    burrito_thought: Handle<Image>,
+    #[dependency]
+    italian_sandwich_thought: Handle<Image>,
+    #[dependency]
+    salami_sandwich_thought: Handle<Image>,
+    #[dependency]
+    tralala_thought: Handle<Image>,
 }
 
 impl FromWorld for FoodAssets {
@@ -33,6 +44,36 @@ impl FromWorld for FoodAssets {
             italian_sandwich: assets.load("images/rooms/prop/food/italian_sandwich.png"),
             salami_sandwich: assets.load("images/rooms/prop/food/salami_sandwich.png"),
             tralala: assets.load("images/rooms/prop/food/tralala.png"),
+
+            apple_thought: assets.load("images/rooms/prop/food/apple_thought.png"),
+            burrito_thought: assets.load("images/rooms/prop/food/burrito_thought.png"),
+            italian_sandwich_thought: assets
+                .load("images/rooms/prop/food/italian_sandwich_thought.png"),
+            salami_sandwich_thought: assets
+                .load("images/rooms/prop/food/salami_sandwich_thought.png"),
+            tralala_thought: assets.load("images/rooms/prop/food/tralala_thought.png"),
+        }
+    }
+}
+
+impl FoodAssets {
+    pub fn get_thought(&self, food: Food) -> Handle<Image> {
+        match food {
+            Food::Apple => self.apple_thought.clone(),
+            Food::Burrito => self.burrito_thought.clone(),
+            Food::ItalianSandwich => self.italian_sandwich_thought.clone(),
+            Food::SalamiSandwich => self.salami_sandwich_thought.clone(),
+            Food::Tralala => self.tralala_thought.clone(),
+        }
+    }
+
+    pub fn get(&self, food: Food) -> Handle<Image> {
+        match food {
+            Food::Apple => self.apple.clone(),
+            Food::Burrito => self.burrito.clone(),
+            Food::ItalianSandwich => self.italian_sandwich.clone(),
+            Food::SalamiSandwich => self.salami_sandwich.clone(),
+            Food::Tralala => self.tralala.clone(),
         }
     }
 }
@@ -42,11 +83,11 @@ impl FromWorld for FoodAssets {
 struct FridgeFood(Food);
 
 #[rustfmt::skip]
-fn food(food: Food, image: Handle<Image>) -> impl Bundle {
+fn food(food: Food, assets: &FoodAssets) -> impl Bundle {
     (
         FridgeFood(food),
         Visibility::default(),
-        Sprite::from_image(image),
+        Sprite::from_image(assets.get(food)),
         Pickable::default(),
         observers![pick_food],
     )
@@ -54,11 +95,11 @@ fn food(food: Food, image: Handle<Image>) -> impl Bundle {
 
 pub(super) fn all_food(assets: &FoodAssets) -> impl Bundle {
     children![
-        food(Food::Apple, assets.apple.clone()),
-        food(Food::Burrito, assets.burrito.clone()),
-        food(Food::ItalianSandwich, assets.italian_sandwich.clone()),
-        food(Food::SalamiSandwich, assets.salami_sandwich.clone()),
-        food(Food::Tralala, assets.tralala.clone()),
+        food(Food::Apple, assets),
+        food(Food::Burrito, assets),
+        food(Food::ItalianSandwich, assets),
+        food(Food::SalamiSandwich, assets),
+        food(Food::Tralala, assets),
     ]
 }
 
