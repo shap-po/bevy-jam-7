@@ -22,7 +22,10 @@ pub(super) fn plugin(app: &mut App) {
         ghost::plugin,
         ghost_overlay::plugin,
     ));
+
     app.init_resource::<EnemyOpportunity>();
+
+    app.add_systems(OnEnter(Screen::Gameplay), reset_timer);
     app.add_systems(
         Update,
         (
@@ -100,6 +103,10 @@ fn enemy_tick(
             commands.trigger(EnemyTicked { entity });
         }
     }
+}
+
+fn reset_timer(mut timer: ResMut<EnemyOpportunity>) {
+    timer.0.reset();
 }
 
 #[cfg(debug_assertions)]
