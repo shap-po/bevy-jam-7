@@ -102,7 +102,7 @@ fn doordash_complete(
     event: On<FoodBrought>,
     mut doordash: Single<&mut Doordash>,
     mut command: Commands,
-    mut food_player: ResMut<HeldFood>,
+    mut held_food: ResMut<HeldFood>,
 ) {
     let Doordash::Waiting {
         state_counter,
@@ -111,13 +111,16 @@ fn doordash_complete(
     else {
         return;
     };
-    let Some(food_player_unpack) = food_player.0 else {
+    let Some(food) = held_food.0 else {
         return;
     };
 
-    if food_player_unpack == food_want {
+    #[cfg(debug_assertions)]
+    println!("Gave {:?} to doordash, he wants {:?}", food, food_want);
+
+    held_food.0 = None;
+    if food == food_want {
         **doordash = Doordash::Away(0);
-        food_player.0 = None;
     } else {
         command.trigger(GameOver::Loose(EnemyType::Doordash));
         **doordash = Doordash::Death;

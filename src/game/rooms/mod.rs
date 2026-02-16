@@ -1,11 +1,15 @@
 use std::time::Duration;
 
-use bevy::{prelude::*, render::view::visibility};
+use bevy::{ecs::schedule::SystemSets, prelude::*, render::view::visibility};
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::{
-    AppSystems, PausableSystems, game::rooms::kitchen_fridge_food::FoodAssets,
-    input_manager::Action, screens::Screen, theme::widget,
+    AppSystems, PausableSystems,
+    asset_tracking::LoadResource,
+    game::rooms::{hall::HallAssets, kitchen_fridge_food::FoodAssets},
+    input_manager::Action,
+    screens::Screen,
+    theme::widget,
 };
 
 mod bathroom;
@@ -33,7 +37,7 @@ pub(super) fn plugin(app: &mut App) {
         kitchen_window::plugin,
     ));
 
-    app.add_systems(Startup, startup);
+    app.add_systems(OnEnter(Screen::Gameplay), startup);
     app.add_systems(Update, show_background);
 
     app.add_systems(
@@ -51,7 +55,7 @@ pub(super) fn plugin(app: &mut App) {
     );
 
     #[cfg(debug_assertions)]
-    app.add_systems(PostStartup, room_check);
+    app.add_systems(OnEnter(Screen::Gameplay), room_check.after(startup));
 }
 
 #[derive(States, Copy, Clone, Eq, PartialEq, Hash, Debug, Default, Reflect)]
@@ -129,18 +133,19 @@ impl RoomComponent {
 #[reflect(Component)]
 struct Background;
 
-fn startup(mut commands: Commands, food_assets: Res<FoodAssets>) {
+fn startup(mut commands: Commands, food_assets: Res<FoodAssets>, hall_assets: Res<HallAssets>) {
     commands.spawn((Name::new("Background"), Background, Sprite::default()));
     commands.spawn((
         Name::new("Rooms"),
         Transform::default(),
         Visibility::Visible,
+        DespawnOnExit(Screen::Gameplay),
         children![
             bathroom::room(),
             bathroom_washer::room(),
             bedroom::room(),
             bedroom_bed::room(),
-            hall::room(),
+            hall::room(&hall_assets),
             kitchen::room(),
             kitchen_fridge::room(&food_assets),
             kitchen_window::room(),
