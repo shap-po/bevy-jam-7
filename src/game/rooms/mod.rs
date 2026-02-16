@@ -219,7 +219,7 @@ fn navigate(
 
     if let Some(new_room) = direction {
         #[cfg(debug_assertions)]
-        if room_query.iter().find(|r| r.is(new_room)).is_none() {
+        if !room_query.iter().any(|r| r.is(new_room)) {
             warn!(
                 "Tried to enter room {:?} that does not have an implementation",
                 new_room

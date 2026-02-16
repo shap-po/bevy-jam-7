@@ -1,3 +1,4 @@
+#![allow(clippy::match_single_binding)]
 use bevy::{audio::Volume, prelude::*};
 
 use crate::asset_tracking::LoadResource;
