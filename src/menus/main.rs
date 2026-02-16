@@ -28,7 +28,10 @@ fn spawn_main_menu(mut commands: Commands, game_state: Res<GameState>) {
         ],
         #[cfg(target_family = "wasm")]
         children![
-            widget::button("Play", enter_loading_or_gameplay_screen),
+            widget::button(
+                format!("Play (night {})", game_state.night),
+                enter_loading_or_gameplay_screen
+            ),
             widget::button("Settings", open_settings_menu),
             widget::button("Credits", open_credits_menu),
         ],
