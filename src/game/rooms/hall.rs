@@ -3,6 +3,7 @@ use bevy::state::commands;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
+use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::doordash::Doordash;
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::input_manager::Action;
@@ -14,6 +15,7 @@ use crate::{AppSystems, PausableSystems};
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<HallAssets>();
     app.add_systems(Update, set_background.run_if(in_state(Room::Hall)));
+    app.add_systems(OnEnter(Room::Hall), start_clock_loop);
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
@@ -62,4 +64,8 @@ fn set_background(
             &assets.background
         },
     );
+}
+
+fn start_clock_loop(mut commands: Commands, sfx_asset: Res<Sfxlib>) {
+    commands.play_loop_sfx(sfx_asset.hall_ambient_clock.clone(), 0.25, Room::Hall);
 }

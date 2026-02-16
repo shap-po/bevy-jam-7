@@ -39,3 +39,7 @@ This project was generated using the [Bevy New 2D](https://github.com/TheBevyFlo
 - j-tap (Freesound) (https://pixabay.com/sound-effects/household-door-open-close-45475/)
 - u_ryiem47seu (https://pixabay.com/sound-effects/film-special-effects-door-182645/)
 - dr19 (Freesound) (https://pixabay.com/sound-effects/household-fridge-open-shut-98817/)
+- ablekirby (Freesound) (https://pixabay.com/sound-effects/people-rough-cloth-43926/)
+- Universfield (https://pixabay.com/sound-effects/broken-glass-impact-454859/)
+- astrand (Freesound) (https://pixabay.com/sound-effects/film-special-effects-beep-increase-noise-74464/)
+- shoryzow (Freesound) (https://pixabay.com/sound-effects/household-washing-machine-soft-60397/)

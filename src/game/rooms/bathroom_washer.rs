@@ -4,6 +4,7 @@ use bevy::state::commands;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
+use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::washer::{Washer, WashingMinigameComplete};
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::input_manager::Action;
@@ -18,6 +19,7 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         (set_background, set_washer, update_text).run_if(in_state(Room::BathroomWasher)),
     );
+    app.add_systems(OnEnter(Room::BathroomWasher), start_washer_loop);
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
@@ -112,4 +114,12 @@ where
         };
         commands.trigger(WashingMinigameComplete);
     }
+}
+
+fn start_washer_loop(mut commands: Commands, sfx_asset: Res<Sfxlib>, washer: Single<&Washer>) {
+    let Washer::Passive(_) = **washer else {
+
+            return;
+        };
+    commands.play_loop_sfx(sfx_asset.washer_ambient_loop.clone(), 0.4, Room::BathroomWasher);
 }

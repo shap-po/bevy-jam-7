@@ -1,8 +1,8 @@
-use crate::game::{
+use crate::{audio::{PlaySfx, Sfxlib}, game::{
     enemies::{Difficulty, Enemy, EnemyTicked, EnemyType},
     events::GameOver,
     rooms::Room,
-};
+}};
 use bevy::{prelude::*, transform::components};
 
 pub(super) fn plugin(app: &mut App) {
@@ -10,7 +10,7 @@ pub(super) fn plugin(app: &mut App) {
     app.add_observer(washer_complete);
 }
 
-#[derive(Component, Reflect, Debug)]
+#[derive(Component, Reflect, Debug, PartialEq)]
 #[reflect(Component)]
 pub enum Washer {
     Passive(i8),
@@ -32,6 +32,7 @@ const MAXSTATES: i8 = 10;
 fn handle_opportunity(
     event: On<EnemyTicked>,
     washer_query: Single<(Entity, &mut Washer)>,
+    sfx_asset: Res<Sfxlib>,
     mut command: Commands,
 ) {
     let (entity, mut washer) = washer_query.into_inner();
@@ -42,6 +43,7 @@ fn handle_opportunity(
     *washer = match *washer {
         Washer::Passive(i) => {
             if i <= 0 {
+                command.play_loop_sfx(sfx_asset.washer_beep.clone(), 0.25, Room::BathroomWasher);
                 Washer::Active(MAXSTATES)
             } else {
                 Washer::Passive(i - 1)
@@ -49,6 +51,7 @@ fn handle_opportunity(
         }
         Washer::Active(i) => {
             if i <= 0 {
+                //command.play_simple_sfx(sfx_asset.washer_outro.clone());
                 command.trigger(GameOver::Loose(EnemyType::Washer));
                 Washer::Death
             } else {
@@ -65,3 +68,4 @@ pub struct WashingMinigameComplete;
 fn washer_complete(event: On<WashingMinigameComplete>, mut washer: Single<&mut Washer>) {
     **washer = Washer::Passive(MAXSTATES);
 }
+

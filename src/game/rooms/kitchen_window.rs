@@ -4,6 +4,7 @@ use bevy::window::WindowClosed;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
+use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::dino::{Dino, KitchenWindowClosed};
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::input_manager::Action;
@@ -19,6 +20,7 @@ pub(super) fn plugin(app: &mut App) {
         (set_background, set_window, force_move).run_if(in_state(Room::KitchenWindow)),
     );
     app.add_systems(OnExit(Room::KitchenWindow), close_window);
+    app.add_systems(OnEnter(Room::KitchenWindow), start_window_loop);
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
@@ -117,15 +119,32 @@ fn set_window(
     sprite.color.set_alpha(if window.0 { 0.0 } else { 1.0 });
 }
 
-fn update_window<E>(set_closed: bool) -> impl Fn(On<E>, Query<&Sprite>, ResMut<KitchenWindowClosed>)
+fn update_window<E>(
+    set_closed: bool,
+    ) -> impl Fn(
+        On<E>, 
+        Query<&Sprite>, 
+        ResMut<KitchenWindowClosed>,
+        Res<Sfxlib>,
+        Commands,
+                )
 where
     E: EntityEvent + std::fmt::Debug + Clone + Reflect,
 {
-    move |ev, sprites, mut window| {
+    move |ev, sprites, mut window, sfx_asset, mut commands| {
         let Ok(sprite) = sprites.get(ev.event_target()) else {
             return;
         };
+        if window.0 == set_closed {return;}
         window.0 = set_closed;
+        commands.play_simple_sfx(
+            if set_closed {
+                    sfx_asset.rand_curtains_close()
+                }
+                else {
+                    sfx_asset.rand_curtains_open()
+                }
+        );
     }
 }
 
@@ -137,4 +156,8 @@ fn force_move(dino: Single<&Dino>, mut next_room: ResMut<NextState<Room>>) {
     if **dino == Dino::Death {
         next_room.set(Room::Kitchen);
     }
+}
+
+fn start_window_loop(mut commands: Commands, sfx_asset: Res<Sfxlib>) {
+    commands.play_loop_sfx(sfx_asset.window_ambient_forest.clone(), 0.4, Room::KitchenWindow);
 }
