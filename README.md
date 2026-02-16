@@ -48,3 +48,7 @@ This project was generated using the [Bevy New 2D](https://github.com/TheBevyFlo
 - Universfield (https://pixabay.com/sound-effects/broken-glass-impact-454859/)
 - astrand (Freesound) (https://pixabay.com/sound-effects/film-special-effects-beep-increase-noise-74464/)
 - shoryzow (Freesound) (https://pixabay.com/sound-effects/household-washing-machine-soft-60397/)
+- User1994 (Freesound) (https://pixabay.com/sound-effects/film-special-effects-take-it-90781/)
+- morganpurkis (Freesound) (https://pixabay.com/sound-effects/film-special-effects-explosion-80108/)
+- TanwerAman (https://pixabay.com/sound-effects/nature-ice-freezing-445024/)
+- FunWithSound (Freesound) (https://pixabay.com/sound-effects/film-special-effects-person-rub-hands-together-1-81713/)

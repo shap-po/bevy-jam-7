@@ -43,7 +43,7 @@ fn handle_opportunity(
     *washer = match *washer {
         Washer::Passive(i) => {
             if i <= 0 {
-                command.play_loop_sfx(sfx_asset.washer_beep.clone(), 0.25, Room::BathroomWasher);
+                command.play_loop_sfx(sfx_asset.washer_beep.clone(), 0.05, Room::BathroomWasher);
                 Washer::Active(MAXSTATES)
             } else {
                 Washer::Passive(i - 1)
@@ -52,6 +52,7 @@ fn handle_opportunity(
         Washer::Active(i) => {
             if i <= 0 {
                 //command.play_simple_sfx(sfx_asset.washer_outro.clone());
+                command.play_volume_sfx(sfx_asset.boom.clone(), 0.1);
                 command.trigger(GameOver::Loose(EnemyType::Washer));
                 Washer::Death
             } else {

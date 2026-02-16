@@ -1,3 +1,4 @@
+use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::{Difficulty, Enemy, EnemyTicked, EnemyType, ghost_overlay};
 use crate::game::events::GameOver;
 use crate::game::rooms::Room;
@@ -39,6 +40,7 @@ fn handle_opportunity(
     ghost_query: Single<(Entity, &mut Ghost)>,
     room: Res<State<Room>>,
     mut command: Commands,
+    sfx_assets: Res<Sfxlib>,
 ) {
     let (entity, mut ghost) = ghost_query.into_inner();
     if entity != event.event_target() {
@@ -50,6 +52,7 @@ fn handle_opportunity(
     } else {
         ghost.0 += 1;
         if ghost.0 >= MAX_STAGE {
+            command.play_volume_sfx(sfx_assets.freeze.clone(), 0.25);
             command.trigger(GameOver::Loose(EnemyType::Ghost));
             ghost.0 = MAX_STAGE;
         }

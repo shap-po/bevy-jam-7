@@ -7,9 +7,6 @@ pub(super) fn plugin(app: &mut App) {
     app.add_observer(apply_interaction_palette_on_over);
     app.add_observer(apply_interaction_palette_on_out);
     app.add_observer(apply_interaction_palette_on_release);
-
-    app.load_resource::<InteractionAssets>();
-    app.add_observer(play_sound_effect_on_click);
 }
 
 /// Palette for widget interactions. Add this to an entity that supports
@@ -65,28 +62,4 @@ fn apply_interaction_palette_on_out(
     };
 
     *bg = palette.none.into();
-}
-
-#[derive(Resource, Asset, Clone, Reflect)]
-#[reflect(Resource)]
-struct InteractionAssets {
-    #[dependency]
-    click: Handle<AudioSource>,
-}
-
-impl FromWorld for InteractionAssets {
-    fn from_world(world: &mut World) -> Self {
-        let assets = world.resource::<AssetServer>();
-        Self {
-            click: assets.load("audio/sound_effects/button_click.ogg"),
-        }
-    }
-}
-
-fn play_sound_effect_on_click(
-    _: On<Pointer<Click>>,
-    interaction_assets: If<Res<InteractionAssets>>,
-    mut commands: Commands,
-) {
-    commands.spawn(sound_effect(interaction_assets.click.clone()));
 }

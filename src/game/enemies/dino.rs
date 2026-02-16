@@ -49,7 +49,7 @@ fn handle_opportunity(
             if window.0 {
                 Dino::Gone
             } else {
-                command.play_volume_sfx(sfx_asset.window_broke_in.clone(), 0.5);
+                command.play_volume_sfx(sfx_asset.window_broke_in.clone(), 0.25);
                 command.trigger(GameOver::Loose(EnemyType::Dino));
                 Dino::Death
             }
