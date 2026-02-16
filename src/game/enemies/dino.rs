@@ -54,11 +54,13 @@ fn handle_opportunity(
                 Dino::Gone
             } else {
                 command.play_volume_sfx(sfx_asset.window_broke_in.clone(), 0.25);
-                command.trigger(GameOver::Death(EnemyType::Dino));
                 Dino::Death
             }
         }
-        Dino::Death => Dino::Death,
+        Dino::Death => {
+            command.trigger(GameOver::Death(EnemyType::Dino));
+            Dino::Death
+        },
     };
 }
 
