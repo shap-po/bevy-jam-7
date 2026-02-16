@@ -52,7 +52,7 @@ fn handle_opportunity(
         Washer::Active(i) => {
             if i <= 0 {
                 //command.play_simple_sfx(sfx_asset.washer_outro.clone());
-                command.trigger(GameOver::Loose(EnemyType::Washer));
+                command.trigger(GameOver::Death(EnemyType::Washer));
                 Washer::Death
             } else {
                 Washer::Active(i - 1)

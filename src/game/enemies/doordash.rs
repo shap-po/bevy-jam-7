@@ -78,7 +78,7 @@ fn handle_opportunity(
             food_want,
         } => {
             if state_counter > MAX_STATES_WAITING {
-                command.trigger(GameOver::Loose(EnemyType::Doordash));
+                command.trigger(GameOver::Death(EnemyType::Doordash));
                 Doordash::Death
             } else {
                 Doordash::Waiting {
@@ -122,7 +122,7 @@ fn doordash_complete(
     if food == food_want {
         **doordash = Doordash::Away(0);
     } else {
-        command.trigger(GameOver::Loose(EnemyType::Doordash));
+        command.trigger(GameOver::Death(EnemyType::Doordash));
         **doordash = Doordash::Death;
     }
 }

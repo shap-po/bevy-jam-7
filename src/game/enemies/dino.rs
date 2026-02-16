@@ -1,9 +1,12 @@
 use bevy::{prelude::*, transform::components};
 
-use crate::{audio::{PlaySfx, Sfxlib}, game::{
-    enemies::{Difficulty, Enemy, EnemyTicked, EnemyType},
-    events::GameOver,
-}};
+use crate::{
+    audio::{PlaySfx, Sfxlib},
+    game::{
+        enemies::{Difficulty, Enemy, EnemyTicked, EnemyType},
+        events::GameOver,
+    },
+};
 
 pub(super) fn plugin(app: &mut App) {
     app.init_resource::<KitchenWindowClosed>();
@@ -50,7 +53,7 @@ fn handle_opportunity(
                 Dino::Gone
             } else {
                 command.play_volume_sfx(sfx_asset.window_broke_in.clone(), 0.5);
-                command.trigger(GameOver::Loose(EnemyType::Dino));
+                command.trigger(GameOver::Death(EnemyType::Dino));
                 Dino::Death
             }
         }

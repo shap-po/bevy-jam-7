@@ -46,12 +46,23 @@ impl Default for EnemyOpportunity {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Reflect)]
 pub enum EnemyType {
     Dino,
     Doordash,
     Ghost,
     Washer,
+}
+
+impl EnemyType {
+    pub fn get_cause(&self) -> &'static str {
+        match self {
+            EnemyType::Dino => "Got bitten by a dino",
+            EnemyType::Doordash => "Yoinked from home",
+            EnemyType::Ghost => "Froze to death",
+            EnemyType::Washer => "Exploded by a washing machine",
+        }
+    }
 }
 
 #[derive(Component, Reflect, Debug)]

@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::screens::Screen;
 
-mod enemies;
+pub mod enemies;
 pub mod events;
 mod interactions;
 mod rooms;
@@ -22,6 +22,7 @@ pub fn start_game(mut commands: Commands) {
         Name::new("Enemies"),
         DespawnOnExit(Screen::Gameplay),
         Transform::default(),
+        Visibility::Inherited,
         children![
             enemies::dino::dino(10),
             enemies::ghost::ghost(10),

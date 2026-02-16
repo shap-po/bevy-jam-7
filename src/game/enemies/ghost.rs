@@ -50,7 +50,7 @@ fn handle_opportunity(
     } else {
         ghost.0 += 1;
         if ghost.0 >= MAX_STAGE {
-            command.trigger(GameOver::Loose(EnemyType::Ghost));
+            command.trigger(GameOver::Death(EnemyType::Ghost));
             ghost.0 = MAX_STAGE;
         }
     }

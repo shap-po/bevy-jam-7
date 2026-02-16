@@ -38,7 +38,7 @@ pub(super) fn plugin(app: &mut App) {
         kitchen_window::plugin,
     ));
 
-    app.add_systems(OnEnter(Screen::Gameplay), startup);
+    app.add_systems(OnEnter(Screen::Gameplay), spawn_rooms);
     app.add_systems(Update, show_background);
 
     app.add_systems(
@@ -56,7 +56,7 @@ pub(super) fn plugin(app: &mut App) {
     );
 
     #[cfg(debug_assertions)]
-    app.add_systems(OnEnter(Screen::Gameplay), room_check.after(startup));
+    app.add_systems(OnEnter(Screen::Gameplay), room_check.after(spawn_rooms));
 }
 
 #[derive(States, Copy, Clone, Eq, PartialEq, Hash, Debug, Default, Reflect)]
@@ -134,7 +134,7 @@ impl RoomComponent {
 #[reflect(Component)]
 struct Background;
 
-fn startup(mut commands: Commands, food_assets: Res<FoodAssets>, hall_assets: Res<HallAssets>) {
+fn spawn_rooms(mut commands: Commands, food_assets: Res<FoodAssets>, hall_assets: Res<HallAssets>) {
     commands.spawn((Name::new("Background"), Background, Sprite::default()));
     commands.spawn((
         Name::new("Rooms"),
