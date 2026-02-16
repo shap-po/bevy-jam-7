@@ -7,7 +7,10 @@ use bevy::{
     prelude::*,
 };
 
-use crate::theme::{interaction::InteractionPalette, palette::*};
+use crate::theme::{
+    interaction::{BackgroundPalette, TextColorPalette},
+    palette::*,
+};
 
 /// A root UI node that fills the window and centers its content.
 pub fn ui_root(name: impl Into<Cow<'static, str>>) -> impl Bundle {
@@ -111,7 +114,7 @@ where
                     Name::new("Button Inner"),
                     Button,
                     BackgroundColor(BUTTON_BACKGROUND),
-                    InteractionPalette {
+                    BackgroundPalette {
                         none: BUTTON_BACKGROUND,
                         hovered: BUTTON_HOVERED_BACKGROUND,
                         pressed: BUTTON_PRESSED_BACKGROUND,
@@ -121,8 +124,16 @@ where
                         Text(text),
                         TextFont::from_font_size(40.0),
                         TextColor(BUTTON_TEXT),
+                        TextColorPalette {
+                            none: BUTTON_TEXT,
+                            hovered: BUTTON_TEXT_HOVER,
+                            pressed: BUTTON_TEXT_PRESSED,
+                        },
                         // Don't bubble picking events from the text up to the button.
-                        Pickable::IGNORE,
+                        Pickable {
+                            is_hoverable: true,
+                            should_block_lower: false,
+                        },
                     )],
                 ))
                 .insert(button_bundle)
