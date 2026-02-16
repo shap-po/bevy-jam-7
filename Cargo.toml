@@ -8,17 +8,17 @@ edition = "2024"
 bevy = { version = "0.18", features = ["bevy_picking"]}
 bevy_bundled_observers = {git = "https://github.com/fallible-algebra/bevy_observers"}
 leafwing-input-manager = "0.20.0"
-rand = "0.9"
+rand = "0.10.0"
 # Compile out low-severity logs to improve performance.
 # Remove these features if you want to profile your game with tracy.
 # (see <https://github.com/bevyengine/bevy/blob/main/docs/profiling.md#tracy-profiler>)
-tracing = { version = "0.1", features = [
+tracing = { version = "0.1.44", features = [
     "max_level_debug",
     "release_max_level_warn",
 ] }
 
 [target.wasm32-unknown-unknown.dependencies]
-getrandom = { version = "0.3", features = ["wasm_js"] }
+getrandom = { version = "0.4.1", features = ["wasm_js"] }
 
 [features]
 # Default to a native dev build.
