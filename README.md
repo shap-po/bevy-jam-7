@@ -6,7 +6,7 @@ Jam's theme: **Extremely Incohesive Fever Dream**
 
 ## Game Description
 
-TODO
+A FNAF-inspired game that is roughly based on a dream of my friend.
 
 ## Used Assets
 
