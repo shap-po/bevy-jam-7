@@ -52,3 +52,4 @@ This project was generated using the [Bevy New 2D](https://github.com/TheBevyFlo
 - morganpurkis (Freesound) (https://pixabay.com/sound-effects/film-special-effects-explosion-80108/)
 - TanwerAman (https://pixabay.com/sound-effects/nature-ice-freezing-445024/)
 - FunWithSound (Freesound) (https://pixabay.com/sound-effects/film-special-effects-person-rub-hands-together-1-81713/)
+- AudioPapkin (https://pixabay.com/sound-effects/horror-monster-footsteps-on-gravel-295850/)

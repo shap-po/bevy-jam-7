@@ -50,14 +50,17 @@ fn handle_opportunity(
         Dino::Near => Dino::Stalk,
         Dino::Stalk => {
             if window.0 {
+                command.play_volume_sfx(sfx_asset.rand_dino_gone(), 0.2);
                 Dino::Gone
             } else {
                 command.play_volume_sfx(sfx_asset.window_broke_in.clone(), 0.25);
-                command.trigger(GameOver::Death(EnemyType::Dino));
                 Dino::Death
             }
         }
-        Dino::Death => Dino::Death,
+        Dino::Death => {
+            command.trigger(GameOver::Death(EnemyType::Dino));
+            Dino::Death
+        },
     };
 }
 
