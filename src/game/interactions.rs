@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 
-
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(SpritePickingSettings {
         require_markers: false,
