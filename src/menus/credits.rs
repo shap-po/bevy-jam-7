@@ -35,6 +35,7 @@ fn assets() -> impl Bundle {
     grid(vec![
         ["Daneonen", "true gamer"],
         ["nicesweater", "the dreamer"],
+        ["more", "in README"],
     ])
 }
 
