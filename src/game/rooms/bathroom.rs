@@ -2,16 +2,15 @@ use bevy::prelude::*;
 use bevy::state::commands;
 use leafwing_input_manager::prelude::ActionState;
 
-
 use crate::asset_tracking::LoadResource;
 use crate::audio::{PlaySfx, Sfxlib};
+use crate::game::enemies::washer::Washer;
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::input_manager::Action;
 use crate::screens::Screen;
 use crate::theme::widget;
 use crate::utils::SetImage;
 use crate::{AppSystems, PausableSystems};
-use crate::game::enemies::washer::Washer;
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<BathroomAssets>();
@@ -57,7 +56,7 @@ fn set_background(
 
 fn start_quet_washer_loop(mut commands: Commands, sfx_asset: Res<Sfxlib>, washer: Single<&Washer>) {
     let Washer::Passive(_) = **washer else {
-            return;
-        };
+        return;
+    };
     commands.play_loop_sfx(sfx_asset.washer_ambient_loop.clone(), 0.05, Room::Bathroom);
 }

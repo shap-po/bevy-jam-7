@@ -103,8 +103,6 @@ pub struct Sfxlib {
     pub boom: Handle<AudioSource>,
     #[dependency]
     pub freeze: Handle<AudioSource>,
-    
-    
 }
 
 impl FromWorld for Sfxlib {
@@ -142,58 +140,57 @@ impl FromWorld for Sfxlib {
     }
 }
 impl Sfxlib {
-    pub fn rand_player_run(&self) -> Handle<AudioSource>{
+    pub fn rand_player_run(&self) -> Handle<AudioSource> {
         match rand::random_range(0..=2) {
             0 => self.player_run_1.clone(),
             1 => self.player_run_2.clone(),
             _ => self.player_run_3.clone(),
-            }
+        }
     }
-    pub fn rand_curtains_open(&self) -> Handle<AudioSource>{
+    pub fn rand_curtains_open(&self) -> Handle<AudioSource> {
         match rand::random_range(0..=2) {
             0 => self.curtains_open_1.clone(),
             1 => self.curtains_open_2.clone(),
             _ => self.curtains_open_3.clone(),
-            }
+        }
     }
-    pub fn rand_curtains_close(&self) -> Handle<AudioSource>{
+    pub fn rand_curtains_close(&self) -> Handle<AudioSource> {
         match rand::random_range(0..=2) {
             0 => self.curtains_close_1.clone(),
             1 => self.curtains_close_2.clone(),
             _ => self.curtains_close_3.clone(),
-            }
+        }
     }
-    pub fn rand_doordash_sfx(&self) -> Handle<AudioSource>{
+    pub fn rand_doordash_sfx(&self) -> Handle<AudioSource> {
         match rand::random_range(0..=1) {
             0 => self.spooky_sfx_1.clone(),
             _ => self.spooky_sfx_1.clone(),
-            }
+        }
     }
-    pub fn rand_door_open_and_close(&self) -> Handle<AudioSource>{
+    pub fn rand_door_open_and_close(&self) -> Handle<AudioSource> {
         match rand::random_range(0..=0) {
             _ => self.door_open_and_close_1.clone(),
-            }
+        }
     }
-    pub fn rand_fridge_close(&self) -> Handle<AudioSource>{
+    pub fn rand_fridge_close(&self) -> Handle<AudioSource> {
         match rand::random_range(0..=0) {
             _ => self.fridge_close_1.clone(),
-            }
+        }
     }
-    pub fn rand_fridge_open(&self) -> Handle<AudioSource>{
+    pub fn rand_fridge_open(&self) -> Handle<AudioSource> {
         match rand::random_range(0..=0) {
             _ => self.fridge_open_1.clone(),
-            }
+        }
     }
-    pub fn rand_blanket(&self) -> Handle<AudioSource>{
+    pub fn rand_blanket(&self) -> Handle<AudioSource> {
         match rand::random_range(0..=3) {
             0 => self.blanket_1.clone(),
             1 => self.blanket_2.clone(),
             2 => self.blanket_3.clone(),
             _ => self.blanket_4.clone(),
-            }
+        }
     }
 }
-
 
 pub trait PlaySfx {
     fn play_volume_sfx(&mut self, handle: Handle<AudioSource>, vol: f32);
@@ -210,12 +207,19 @@ impl<'w, 's> PlaySfx for Commands<'w, 's> {
         self.play_sfx(handle, PlaybackSettings::DESPAWN);
     }
     fn play_volume_sfx(&mut self, handle: Handle<AudioSource>, vol: f32) {
-        self.play_sfx(handle, PlaybackSettings::DESPAWN.with_volume(Volume::Linear(vol)));
+        self.play_sfx(
+            handle,
+            PlaybackSettings::DESPAWN.with_volume(Volume::Linear(vol)),
+        );
     }
     fn play_loop_sfx(&mut self, handle: Handle<AudioSource>, vol: f32, state: impl States) {
         //DespawnOnExit(Menu::Credits),
-        self.spawn((AudioPlayer(handle), DespawnOnExit(state), PlaybackSettings::LOOP.with_volume(Volume::Linear(vol)), SoundEffect));
+        self.spawn((
+            AudioPlayer(handle),
+            DespawnOnExit(state),
+            PlaybackSettings::LOOP.with_volume(Volume::Linear(vol)),
+            SoundEffect,
+        ));
         //self.play_sfx(handle, PlaybackSettings::LOOP.with_volume(Volume::Linear(vol)));
     }
 }
-

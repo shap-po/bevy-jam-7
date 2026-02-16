@@ -1,7 +1,13 @@
-use bevy::{ecs::{observer, system::command}, prelude::*};
+use bevy::{
+    ecs::{observer, system::command},
+    prelude::*,
+};
 use bevy_bundled_observers::observers;
 
-use crate::{audio::{PlaySfx, Sfxlib}, game::enemies::doordash::{Food, HeldFood}};
+use crate::{
+    audio::{PlaySfx, Sfxlib},
+    game::enemies::doordash::{Food, HeldFood},
+};
 
 pub(super) fn plugin(app: &mut App) {
     app.init_resource::<FoodAssets>();

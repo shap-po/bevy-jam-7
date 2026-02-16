@@ -1,7 +1,10 @@
-use crate::{audio::{PlaySfx, Sfxlib}, game::{
-    enemies::{Difficulty, Enemy, EnemyTicked, EnemyType, doordash},
-    events::GameOver,
-}};
+use crate::{
+    audio::{PlaySfx, Sfxlib},
+    game::{
+        enemies::{Difficulty, Enemy, EnemyTicked, EnemyType, doordash},
+        events::GameOver,
+    },
+};
 use bevy::{prelude::*, transform::components};
 
 pub(super) fn plugin(app: &mut App) {
