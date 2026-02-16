@@ -145,6 +145,7 @@ impl RoomComponent {
         self.can_move_right = true;
     }
 
+    #[allow(dead_code)]
     fn block_movement(&mut self) {
         self.can_move_forward = false;
         self.can_move_back = false;

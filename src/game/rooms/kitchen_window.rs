@@ -119,7 +119,7 @@ where
     E: EntityEvent + std::fmt::Debug + Clone + Reflect,
 {
     move |ev, sprites, mut window, sfx_asset, mut commands| {
-        let Ok(sprite) = sprites.get(ev.event_target()) else {
+        let Ok(_) = sprites.get(ev.event_target()) else {
             return;
         };
         if window.0 == set_closed {

@@ -100,8 +100,8 @@ fn set_background(
 ) {
     sprite.set_image(
         if let Doordash::Waiting {
-            state_counter,
-            food_want,
+            state_counter: _,
+            food_want: _,
         } = *doordash
         {
             &assets.background_w_hand
@@ -122,7 +122,7 @@ fn set_thinking(
     assets: Res<FoodAssets>,
 ) {
     if let Doordash::Waiting {
-        state_counter,
+        state_counter: _,
         food_want,
     } = *doordash
     {

@@ -104,14 +104,14 @@ pub struct HeldFood(pub Option<Food>);
 pub struct FoodBrought;
 
 fn doordash_complete(
-    event: On<FoodBrought>,
+    _: On<FoodBrought>,
     mut doordash: Single<&mut Doordash>,
     mut command: Commands,
     mut held_food: ResMut<HeldFood>,
     sfx_assets: Res<Sfxlib>,
 ) {
     let Doordash::Waiting {
-        state_counter,
+        state_counter: _,
         food_want,
     } = **doordash
     else {

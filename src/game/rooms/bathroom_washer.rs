@@ -92,7 +92,7 @@ where
     E: EntityEvent + std::fmt::Debug + Clone + Reflect,
 {
     move |ev, sprites, mut commands, washer| {
-        let Ok(sprite) = sprites.get(ev.event_target()) else {
+        let Ok(_) = sprites.get(ev.event_target()) else {
             return;
         };
         let Washer::Active(_) = **washer else {

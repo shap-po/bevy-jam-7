@@ -69,6 +69,6 @@ fn handle_opportunity(
 #[derive(Event, Reflect, Debug, Default)]
 pub struct WashingMinigameComplete;
 
-fn washer_complete(event: On<WashingMinigameComplete>, mut washer: Single<&mut Washer>) {
+fn washer_complete(_: On<WashingMinigameComplete>, mut washer: Single<&mut Washer>) {
     **washer = Washer::Passive(MAXSTATES);
 }

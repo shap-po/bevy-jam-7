@@ -85,7 +85,7 @@ pub struct EnemyTicked {
 
 fn enemy_tick(
     mut commands: Commands,
-    mut enemy_query: Query<(Entity, &Enemy, &Difficulty)>,
+    mut enemy_query: Query<(Entity, &Difficulty)>,
     mut opportunity_timer: ResMut<EnemyOpportunity>,
     time: Res<Time>,
 ) {
@@ -94,7 +94,7 @@ fn enemy_tick(
         return;
     }
 
-    for (entity, enemy, difficulty) in &mut enemy_query {
+    for (entity, difficulty) in &mut enemy_query {
         if difficulty.0 == 0 {
             continue;
         }
@@ -110,8 +110,8 @@ fn reset_timer(mut timer: ResMut<EnemyOpportunity>) {
 }
 
 #[cfg(debug_assertions)]
-fn dev_enemy_tick(mut commands: Commands, mut enemy_query: Query<(Entity, &Enemy, &Difficulty)>) {
-    for (entity, enemy, difficulty) in &mut enemy_query {
+fn dev_enemy_tick(mut commands: Commands, mut enemy_query: Query<(Entity, &Difficulty)>) {
+    for (entity, difficulty) in &mut enemy_query {
         if rand::random_range(0.0..=20.0) < difficulty.0.into() {
             commands.trigger(EnemyTicked { entity });
         }
