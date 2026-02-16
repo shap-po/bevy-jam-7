@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{
-    asset_tracking::ResourceHandles, game::events::GameOver, menus::Menu, screens::Screen,
+    asset_tracking::ResourceHandles, game::events::GameOver, screens::Screen,
     theme::widget,
 };
 

@@ -1,7 +1,4 @@
-use bevy::{
-    ecs::{observer, system::command},
-    prelude::*,
-};
+use bevy::prelude::*;
 use bevy_bundled_observers::observers;
 
 use crate::{

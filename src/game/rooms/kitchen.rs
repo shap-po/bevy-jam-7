@@ -1,15 +1,9 @@
 use bevy::prelude::*;
-use bevy::state::commands;
-use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
 use crate::game::enemies::dino::Dino;
 use crate::game::rooms::{Background, Room, RoomComponent};
-use crate::input_manager::Action;
-use crate::screens::Screen;
-use crate::theme::widget;
 use crate::utils::SetImage;
-use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<KitchenAssets>();

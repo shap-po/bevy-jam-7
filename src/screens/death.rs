@@ -3,7 +3,6 @@ use bevy::prelude::*;
 use crate::{
     asset_tracking::ResourceHandles,
     game::{enemies::EnemyType, events::GameOver},
-    menus::Menu,
     screens::Screen,
     theme::widget,
 };

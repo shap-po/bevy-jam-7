@@ -1,4 +1,4 @@
-use bevy::{ecs::event, prelude::*};
+use bevy::prelude::*;
 
 use crate::game::enemies::EnemyType;
 

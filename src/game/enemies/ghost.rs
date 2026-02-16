@@ -2,7 +2,7 @@ use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::{Difficulty, Enemy, EnemyTicked, EnemyType, ghost_overlay};
 use crate::game::events::GameOver;
 use crate::game::rooms::Room;
-use bevy::{prelude::*, transform::components};
+use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_observer(handle_opportunity);

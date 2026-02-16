@@ -6,7 +6,7 @@ use crate::{
         rooms::Room,
     },
 };
-use bevy::{prelude::*, transform::components};
+use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_observer(handle_opportunity);

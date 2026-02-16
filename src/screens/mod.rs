@@ -9,7 +9,6 @@ mod win;
 
 use bevy::prelude::*;
 
-use crate::game::enemies::EnemyType;
 
 pub(super) fn plugin(app: &mut App) {
     app.init_state::<Screen>();

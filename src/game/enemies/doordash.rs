@@ -1,11 +1,11 @@
 use crate::{
     audio::{PlaySfx, Sfxlib},
     game::{
-        enemies::{Difficulty, Enemy, EnemyTicked, EnemyType, doordash},
+        enemies::{Difficulty, Enemy, EnemyTicked, EnemyType},
         events::GameOver,
     },
 };
-use bevy::{prelude::*, transform::components};
+use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.init_resource::<HeldFood>();

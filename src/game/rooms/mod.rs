@@ -4,14 +4,12 @@ use crate::audio::PlaySfx;
 use crate::game::rooms::bathroom_washer::BathroomWasherAssets;
 use crate::{
     AppSystems, PausableSystems,
-    asset_tracking::LoadResource,
     audio::Sfxlib,
     game::rooms::{hall::HallAssets, kitchen_fridge_food::FoodAssets},
     input_manager::Action,
     screens::Screen,
-    theme::widget,
 };
-use bevy::{ecs::schedule::SystemSets, prelude::*, render::view::visibility};
+use bevy::prelude::*;
 use leafwing_input_manager::prelude::ActionState;
 
 mod bathroom;

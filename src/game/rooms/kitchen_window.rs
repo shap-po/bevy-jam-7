@@ -1,18 +1,11 @@
 use bevy::prelude::*;
-use bevy::state::commands;
-use bevy::window::WindowClosed;
 use bevy_bundled_observers::observers;
-use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
 use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::dino::{Dino, KitchenWindowClosed};
 use crate::game::rooms::{Background, Room, RoomComponent};
-use crate::input_manager::Action;
-use crate::screens::Screen;
-use crate::theme::widget;
 use crate::utils::SetImage;
-use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<KitchenWindowAssets>();
