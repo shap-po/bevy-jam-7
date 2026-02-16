@@ -1,9 +1,9 @@
 use bevy::{prelude::*, transform::components};
 
-use crate::game::{
+use crate::{audio::{PlaySfx, Sfxlib}, game::{
     enemies::{Difficulty, Enemy, EnemyTicked, EnemyType},
     events::GameOver,
-};
+}};
 
 pub(super) fn plugin(app: &mut App) {
     app.init_resource::<KitchenWindowClosed>();
@@ -34,6 +34,7 @@ fn handle_opportunity(
     event: On<EnemyTicked>,
     dino_query: Single<(Entity, &mut Dino)>,
     window: Res<KitchenWindowClosed>,
+    sfx_asset: Res<Sfxlib>,
     mut command: Commands,
 ) {
     let (entity, mut dino) = dino_query.into_inner();
@@ -48,6 +49,7 @@ fn handle_opportunity(
             if window.0 {
                 Dino::Gone
             } else {
+                command.play_volume_sfx(sfx_asset.window_broke_in.clone(), 0.5);
                 command.trigger(GameOver::Loose(EnemyType::Dino));
                 Dino::Death
             }

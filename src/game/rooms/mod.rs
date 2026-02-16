@@ -1,16 +1,17 @@
 use std::time::Duration;
 
-use bevy::{ecs::schedule::SystemSets, prelude::*, render::view::visibility};
-use leafwing_input_manager::prelude::ActionState;
-
+use crate::audio::PlaySfx;
 use crate::{
     AppSystems, PausableSystems,
     asset_tracking::LoadResource,
+    audio::Sfxlib,
     game::rooms::{hall::HallAssets, kitchen_fridge_food::FoodAssets},
     input_manager::Action,
     screens::Screen,
     theme::widget,
 };
+use bevy::{ecs::schedule::SystemSets, prelude::*, render::view::visibility};
+use leafwing_input_manager::prelude::ActionState;
 
 mod bathroom;
 mod bathroom_washer;
@@ -158,6 +159,8 @@ fn navigate(
     room_query: Query<&RoomComponent>,
     current_room: Res<State<Room>>,
     mut next_room: ResMut<NextState<Room>>,
+    sfx_asset: Res<Sfxlib>,
+    mut commands: Commands,
 ) {
     let Some(room) = room_query.iter().find(|r| r.is(**current_room)) else {
         #[cfg(debug_assertions)]
@@ -181,17 +184,36 @@ fn navigate(
         None
     };
 
-    if let Some(room) = direction {
+    if let Some(new_room) = direction {
         #[cfg(debug_assertions)]
-        if room_query.iter().find(|r| r.is(room)).is_none() {
+        if room_query.iter().find(|r| r.is(new_room)).is_none() {
             warn!(
                 "Tried to enter room {:?} that does not have an implementation",
-                room
+                new_room
             );
             return;
         };
 
-        next_room.set(room);
+        next_room.set(new_room);
+        let curr_room = room.this_room;
+        if (new_room == Room::Bedroom && curr_room != Room::BedroomBed)
+            || (curr_room == Room::Bedroom && new_room != Room::BedroomBed)
+        {
+            commands.play_volume_sfx(sfx_asset.rand_door_open_and_close(), 0.05);
+        }
+        if new_room == Room::KitchenFridge && curr_room == Room::Kitchen {
+            //Kitchen -> Fridge
+            commands.play_volume_sfx(sfx_asset.rand_fridge_open(), 0.5);
+        }
+        if new_room == Room::Kitchen && curr_room == Room::KitchenFridge {
+            //Fridge -> Kitchen
+            commands.play_volume_sfx(sfx_asset.rand_fridge_close(), 0.5);
+        }
+        if (curr_room != Room::BedroomBed) && (new_room != Room::BedroomBed) {
+            commands.play_simple_sfx(sfx_asset.rand_player_run());
+        } else {
+            commands.play_simple_sfx(sfx_asset.rand_blanket());
+        }
     }
 }
 

@@ -3,6 +3,7 @@ use bevy::state::commands;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
+use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::dino::Dino;
 use crate::game::rooms::kitchen_fridge_food::FoodAssets;
 use crate::game::rooms::{Background, Room, RoomComponent, kitchen_fridge_food};
@@ -18,6 +19,7 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         (set_background, force_move).run_if(in_state(Room::KitchenFridge)),
     );
+    app.add_systems(OnEnter(Room::KitchenFridge), start_fridge_loop);
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
@@ -65,4 +67,8 @@ fn force_move(dino: Single<&Dino>, mut next_room: ResMut<NextState<Room>>) {
     if **dino == Dino::Death {
         next_room.set(Room::Kitchen);
     }
+}
+
+fn start_fridge_loop(mut commands: Commands, sfx_asset: Res<Sfxlib>) {
+    commands.play_loop_sfx(sfx_asset.fridge_loop.clone(), 0.02, Room::KitchenFridge);
 }

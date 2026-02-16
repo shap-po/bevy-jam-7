@@ -4,6 +4,7 @@ use bevy_bundled_observers::observers;
 use leafwing_input_manager::prelude::ActionState;
 
 use crate::asset_tracking::LoadResource;
+use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::doordash::{Doordash, Food, FoodBrought};
 use crate::game::rooms::kitchen_fridge_food::FoodAssets;
 use crate::game::rooms::{Background, Room, RoomComponent};
@@ -20,6 +21,7 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         (set_background, set_thinking).run_if(in_state(Room::Hall)),
     );
+    app.add_systems(OnEnter(Room::Hall), start_clock_loop);
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
@@ -135,4 +137,8 @@ fn set_thinking(
     } else {
         **thinking = Visibility::Hidden;
     }
+}
+
+fn start_clock_loop(mut commands: Commands, sfx_asset: Res<Sfxlib>) {
+    commands.play_loop_sfx(sfx_asset.hall_ambient_clock.clone(), 0.25, Room::Hall);
 }
