@@ -58,7 +58,7 @@ env:
 
   # The itch.io project to deploy to in the format `user-name/project-name`.
   # There will be no deployment to itch.io if this is commented out.
-  itch_page: shap-po/bevy-jam-7
+  itch_page: shap-po/three-nights-at-grandmas
 
   # The ID of the app produced by this workflow.
   # Applies to macOS releases.
