@@ -45,6 +45,7 @@ fn spawn_death_screen(mut commands: Commands, cause: Res<DeathCause>) {
                 "How did you do that?"
             }),
             widget::button("Try again", enter_loading_or_gameplay_screen),
+            widget::button("Rage quit", enter_title),
         ],
     ));
 }
@@ -59,4 +60,8 @@ fn enter_loading_or_gameplay_screen(
     } else {
         next_screen.set(Screen::Loading);
     }
+}
+
+fn enter_title(_: On<Pointer<Click>>, mut next_screen: ResMut<NextState<Screen>>) {
+    next_screen.set(Screen::Title);
 }
