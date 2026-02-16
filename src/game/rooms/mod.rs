@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 use crate::audio::PlaySfx;
+use crate::game::rooms::bathroom_washer::BathroomWasherAssets;
 use crate::{
     AppSystems, PausableSystems,
     asset_tracking::LoadResource,
@@ -38,6 +39,7 @@ pub(super) fn plugin(app: &mut App) {
         kitchen_window::plugin,
     ));
 
+    app.add_systems(Startup, spawn_background);
     app.add_systems(OnEnter(Screen::Gameplay), spawn_rooms);
     app.add_systems(Update, show_background);
 
@@ -134,8 +136,16 @@ impl RoomComponent {
 #[reflect(Component)]
 struct Background;
 
-fn spawn_rooms(mut commands: Commands, food_assets: Res<FoodAssets>, hall_assets: Res<HallAssets>) {
+fn spawn_background(mut commands: Commands) {
     commands.spawn((Name::new("Background"), Background, Sprite::default()));
+}
+
+fn spawn_rooms(
+    mut commands: Commands,
+    bathroom_washer_assets: Res<BathroomWasherAssets>,
+    hall_assets: Res<HallAssets>,
+    food_assets: Res<FoodAssets>,
+) {
     commands.spawn((
         Name::new("Rooms"),
         Transform::default(),
@@ -143,7 +153,7 @@ fn spawn_rooms(mut commands: Commands, food_assets: Res<FoodAssets>, hall_assets
         DespawnOnExit(Screen::Gameplay),
         children![
             bathroom::room(),
-            bathroom_washer::room(),
+            bathroom_washer::room(&bathroom_washer_assets),
             bedroom::room(),
             bedroom_bed::room(),
             hall::room(&hall_assets),

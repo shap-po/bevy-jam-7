@@ -18,14 +18,14 @@ pub(super) fn plugin(app: &mut App) {
     app.load_resource::<BathroomWasherAssets>();
     app.add_systems(
         Update,
-        (set_background, set_washer, update_text).run_if(in_state(Room::BathroomWasher)),
+        (set_background, update_text).run_if(in_state(Room::BathroomWasher)),
     );
     app.add_systems(OnEnter(Room::BathroomWasher), start_washer_loop);
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
 #[reflect(Resource)]
-struct BathroomWasherAssets {
+pub(super) struct BathroomWasherAssets {
     #[dependency]
     background: Handle<Image>,
     #[dependency]
@@ -51,7 +51,7 @@ struct WasherSprite;
 struct WasherText;
 
 #[rustfmt::skip]
-pub(super) fn room() -> impl Bundle {
+pub(super) fn room(assets: &BathroomWasherAssets) -> impl Bundle {
     (
         RoomComponent {
             this_room: Room::BathroomWasher,
@@ -61,7 +61,7 @@ pub(super) fn room() -> impl Bundle {
         children![
             (
                 WasherSprite,
-                Sprite::default(),
+                Sprite::from_image(assets.washer.clone()),
                 Pickable::default(),
                 observers![
                     update_washer::<Pointer<Press>>(),
@@ -83,13 +83,6 @@ fn set_background(
     assets: If<Res<BathroomWasherAssets>>,
 ) {
     sprite.set_image(&assets.background);
-}
-
-fn set_washer(
-    mut sprite: Single<&mut Sprite, With<WasherSprite>>,
-    assets: If<Res<BathroomWasherAssets>>,
-) {
-    sprite.set_image(&assets.washer);
 }
 
 fn update_text(mut text: Single<&mut Text2d, With<WasherText>>, washer: Single<&Washer>) {
@@ -117,8 +110,11 @@ where
 
 fn start_washer_loop(mut commands: Commands, sfx_asset: Res<Sfxlib>, washer: Single<&Washer>) {
     let Washer::Passive(_) = **washer else {
-
-            return;
-        };
-    commands.play_loop_sfx(sfx_asset.washer_ambient_loop.clone(), 0.4, Room::BathroomWasher);
+        return;
+    };
+    commands.play_loop_sfx(
+        sfx_asset.washer_ambient_loop.clone(),
+        0.4,
+        Room::BathroomWasher,
+    );
 }
