@@ -10,9 +10,6 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         go_back.run_if(in_state(Menu::Credits).and(input_just_pressed(KeyCode::Escape))),
     );
-
-    app.load_resource::<CreditsAssets>();
-    app.add_systems(OnEnter(Menu::Credits), start_credits_music);
 }
 
 fn spawn_credits_menu(mut commands: Commands) {
@@ -23,7 +20,7 @@ fn spawn_credits_menu(mut commands: Commands) {
         children![
             widget::header("Created by"),
             created_by(),
-            widget::header("Assets"),
+            widget::header("Special thanks"),
             assets(),
             widget::button("Back", go_back_on_click),
         ],
@@ -32,20 +29,15 @@ fn spawn_credits_menu(mut commands: Commands) {
 
 fn created_by() -> impl Bundle {
     grid(vec![
-        ["Joe Shmoe", "Implemented alligator wrestling AI"],
-        ["Jane Doe", "Made the music for the alien invasion"],
+        ["Shap_po", "The First"],
+        ["Peusajjjjj", "The second"],
     ])
 }
 
 fn assets() -> impl Bundle {
     grid(vec![
-        ["Ducky sprite", "CC0 by Caz Creates Games"],
-        ["Button SFX", "CC0 by Jaszunio15"],
-        ["Music", "CC BY 3.0 by Kevin MacLeod"],
-        [
-            "Bevy logo",
-            "All rights reserved by the Bevy Foundation, permission granted for splash screen use when unmodified",
-        ],
+        ["Daneonen", "true gamer"],
+        ["nicesweater", "the dreamer"],
     ])
 }
 
@@ -83,28 +75,4 @@ fn go_back_on_click(_: On<Pointer<Click>>, mut next_menu: ResMut<NextState<Menu>
 
 fn go_back(mut next_menu: ResMut<NextState<Menu>>) {
     next_menu.set(Menu::Main);
-}
-
-#[derive(Resource, Asset, Clone, Reflect)]
-#[reflect(Resource)]
-struct CreditsAssets {
-    #[dependency]
-    music: Handle<AudioSource>,
-}
-
-impl FromWorld for CreditsAssets {
-    fn from_world(world: &mut World) -> Self {
-        let assets = world.resource::<AssetServer>();
-        Self {
-            music: assets.load("audio/music/Monkeys Spinning Monkeys.ogg"),
-        }
-    }
-}
-
-fn start_credits_music(mut commands: Commands, credits_music: Res<CreditsAssets>) {
-    commands.spawn((
-        Name::new("Credits Music"),
-        DespawnOnExit(Menu::Credits),
-        music(credits_music.music.clone()),
-    ));
 }

@@ -103,6 +103,8 @@ pub struct Sfxlib {
     pub boom: Handle<AudioSource>,
     #[dependency]
     pub freeze: Handle<AudioSource>,
+     #[dependency]
+    pub dino_gone_1: Handle<AudioSource>,
     
     
 }
@@ -138,6 +140,7 @@ impl FromWorld for Sfxlib {
             item_pickup: assets.load("audio/sound_effects/item_pickup.ogg"),
             boom: assets.load("audio/sound_effects/boom.ogg"),
             freeze: assets.load("audio/sound_effects/freezing.ogg"),
+            dino_gone_1: assets.load("audio/sound_effects/dino_gone_1.ogg"),
         }
     }
 }
@@ -190,6 +193,11 @@ impl Sfxlib {
             1 => self.blanket_2.clone(),
             2 => self.blanket_3.clone(),
             _ => self.blanket_4.clone(),
+            }
+    }
+    pub fn rand_dino_gone(&self) -> Handle<AudioSource>{
+        match rand::random_range(0..=0) {
+            _ => self.dino_gone_1.clone(),
             }
     }
 }
