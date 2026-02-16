@@ -1,16 +1,26 @@
 use bevy::prelude::*;
 
 use crate::{
+    AppSystems, PausableSystems,
     audio::{PlaySfx, Sfxlib},
     game::{
         enemies::{Difficulty, Enemy, EnemyTicked, EnemyType},
         events::GameOver,
     },
+    screens::Screen,
 };
 
 pub(super) fn plugin(app: &mut App) {
     app.init_resource::<KitchenWindowClosed>();
     app.add_observer(handle_opportunity);
+
+    app.add_systems(
+        Update,
+        add_advantage
+            .run_if(in_state(Screen::Gameplay))
+            .in_set(AppSystems::Update)
+            .in_set(PausableSystems),
+    );
 }
 
 #[derive(Component, Reflect, Debug, PartialEq)]
@@ -29,7 +39,7 @@ pub fn dino(difficulty: i8) -> impl Bundle {
         Name::new("Dino"),
         Dino::Gone,
         Difficulty(difficulty),
-        Enemy,
+        Enemy::default(),
     )
 }
 
@@ -60,8 +70,13 @@ fn handle_opportunity(
         Dino::Death => {
             command.trigger(GameOver::Death(EnemyType::Dino));
             Dino::Death
-        },
+        }
     };
+}
+
+fn add_advantage(dino_query: Single<(&mut Enemy, &Dino)>, window: Res<KitchenWindowClosed>) {
+    let (mut enemy, dino) = dino_query.into_inner();
+    enemy.has_advantage = *dino == Dino::Stalk && window.0;
 }
 
 #[derive(Resource, Reflect, Debug, Default)]

@@ -2,10 +2,20 @@ use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::{Difficulty, Enemy, EnemyTicked, EnemyType, ghost_overlay};
 use crate::game::events::GameOver;
 use crate::game::rooms::Room;
+use crate::screens::Screen;
+use crate::{AppSystems, PausableSystems};
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_observer(handle_opportunity);
+
+    app.add_systems(
+        Update,
+        add_advantage
+            .run_if(in_state(Screen::Gameplay))
+            .in_set(AppSystems::Update)
+            .in_set(PausableSystems),
+    );
 }
 
 pub const MAX_STAGE: i8 = 10;
@@ -28,7 +38,7 @@ pub fn ghost(difficulty: i8) -> impl Bundle {
         Visibility::Inherited,
         Ghost::default(),
         Difficulty(difficulty),
-        Enemy,
+        Enemy::default(),
         children![
             ghost_overlay::overlay(),
         ]
@@ -57,4 +67,8 @@ fn handle_opportunity(
             ghost.0 = MAX_STAGE;
         }
     }
+}
+
+fn add_advantage(mut enemy: Single<&mut Enemy, With<Ghost>>, room: Res<State<Room>>) {
+    enemy.has_advantage = **room == Room::BedroomBed;
 }

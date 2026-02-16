@@ -48,7 +48,7 @@ pub fn doordash(difficulty: i8) -> impl Bundle {
         Name::new("Doordash"),
         Doordash::Away(0),
         Difficulty(difficulty),
-        Enemy,
+        Enemy::default(),
     )
 }
 

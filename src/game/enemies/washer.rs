@@ -26,7 +26,7 @@ pub fn washer(difficulty: i8) -> impl Bundle {
         Name::new("Washer"),
         Washer::Passive(MAXSTATES),
         Difficulty(difficulty),
-        Enemy,
+        Enemy::default(),
     )
 }
 

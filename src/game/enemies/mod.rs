@@ -68,10 +68,12 @@ impl EnemyType {
     }
 }
 
-#[derive(Component, Reflect, Debug)]
+#[derive(Component, Reflect, Debug, Default)]
 #[reflect(Component)]
 #[require(Difficulty)]
-struct Enemy;
+struct Enemy {
+    has_advantage: bool,
+}
 
 #[derive(Component, Reflect, Debug, Default)]
 #[reflect(Component)]
@@ -85,7 +87,7 @@ pub struct EnemyTicked {
 
 fn enemy_tick(
     mut commands: Commands,
-    mut enemy_query: Query<(Entity, &Difficulty)>,
+    mut enemy_query: Query<(Entity, &Enemy, &Difficulty)>,
     mut opportunity_timer: ResMut<EnemyOpportunity>,
     time: Res<Time>,
 ) {
@@ -94,12 +96,18 @@ fn enemy_tick(
         return;
     }
 
-    for (entity, difficulty) in &mut enemy_query {
+    for (entity, enemy, difficulty) in &mut enemy_query {
         if difficulty.0 == 0 {
             continue;
         }
 
-        if rand::random_range(0.0..=20.0) < difficulty.0.into() {
+        if rand::random_range(0..=20)
+            < if enemy.has_advantage {
+                difficulty.0.max(15)
+            } else {
+                difficulty.0
+            }
+        {
             commands.trigger(EnemyTicked { entity });
         }
     }
