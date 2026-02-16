@@ -52,7 +52,7 @@ pub(super) fn overlay() -> impl Bundle {
 
     (
         GhostOverlay,
-        Transform::from_xyz(0.0, 0.0, 1.0),
+        Transform::from_xyz(0.0, 0.0, 10.0),
         sprite,
     )
 }
