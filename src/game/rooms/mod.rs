@@ -56,6 +56,7 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         (show_room, apply_room_transition)
             .in_set(AppSystems::Update)
+            .in_set(PausableSystems)
             .run_if(in_state(Screen::Gameplay)),
     );
 
