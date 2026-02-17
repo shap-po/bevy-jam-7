@@ -120,7 +120,7 @@ fn reset_timer(mut timer: ResMut<EnemyOpportunity>) {
 #[cfg(debug_assertions)]
 fn dev_enemy_tick(mut commands: Commands, mut enemy_query: Query<(Entity, &Difficulty)>) {
     for (entity, difficulty) in &mut enemy_query {
-        if rand::random_range(0.0..=20.0) < difficulty.0.into() {
+        if rand::random_range(0..=20) < difficulty.0 {
             commands.trigger(EnemyTicked { entity });
         }
     }
