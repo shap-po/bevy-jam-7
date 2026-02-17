@@ -103,7 +103,7 @@ fn enemy_tick(
 
         if rand::random_range(0..=20)
             < if enemy.has_advantage {
-                difficulty.0.max(15)
+                difficulty.0.max(10)
             } else {
                 difficulty.0
             }
