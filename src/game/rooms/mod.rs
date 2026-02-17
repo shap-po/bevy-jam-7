@@ -41,7 +41,8 @@ pub(super) fn plugin(app: &mut App) {
     ));
 
     app.add_systems(Startup, spawn_background);
-    app.add_systems(OnEnter(Screen::Gameplay), (spawn_rooms, reset_room));
+    app.add_systems(OnEnter(Screen::Gameplay), spawn_rooms);
+    app.add_systems(OnExit(Screen::Gameplay), reset_room);
     app.add_systems(Update, show_background);
 
     app.add_systems(
