@@ -1,7 +1,7 @@
 #![allow(clippy::match_single_binding)]
 use bevy::{audio::Volume, prelude::*};
 
-use crate::asset_tracking::LoadResource;
+use crate::{asset_tracking::LoadResource, menus::Menu};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<Sfxlib>();
@@ -9,6 +9,9 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         apply_global_volume.run_if(resource_changed::<GlobalVolume>),
     );
+
+    app.add_systems(OnEnter(Menu::Pause), pause_audio);
+    app.add_systems(OnExit(Menu::Pause), resume_audio);
 }
 
 /// An organizational marker component that should be added to a spawned [`AudioPlayer`] if it's in the
@@ -210,5 +213,28 @@ impl<'w, 's> PlaySfx for Commands<'w, 's> {
             PlaybackSettings::LOOP.with_volume(Volume::Linear(vol)),
             SoundEffect,
         ));
+    }
+}
+
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+struct PausedAudio;
+
+fn pause_audio(audio_sink_query: Query<(Entity, &AudioSink)>, mut commands: Commands) {
+    for (entity, audio_sink) in audio_sink_query {
+        if !audio_sink.is_paused() {
+            audio_sink.pause();
+            commands.entity(entity).insert(PausedAudio);
+        }
+    }
+}
+
+fn resume_audio(
+    audio_sink_query: Query<(Entity, &AudioSink), With<PausedAudio>>,
+    mut commands: Commands,
+) {
+    for (entity, audio_sink) in audio_sink_query {
+        audio_sink.play();
+        commands.entity(entity).remove::<PausedAudio>();
     }
 }
