@@ -204,13 +204,11 @@ impl<'w, 's> PlaySfx for Commands<'w, 's> {
         );
     }
     fn play_loop_sfx(&mut self, handle: Handle<AudioSource>, vol: f32, state: impl States) {
-        //DespawnOnExit(Menu::Credits),
         self.spawn((
             AudioPlayer(handle),
             DespawnOnExit(state),
             PlaybackSettings::LOOP.with_volume(Volume::Linear(vol)),
             SoundEffect,
         ));
-        //self.play_sfx(handle, PlaybackSettings::LOOP.with_volume(Volume::Linear(vol)));
     }
 }
