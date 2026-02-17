@@ -6,12 +6,16 @@ use crate::game::enemies::dino::Dino;
 use crate::game::rooms::kitchen_fridge_food::FoodAssets;
 use crate::game::rooms::{Background, Room, RoomComponent, kitchen_fridge_food};
 use crate::utils::SetImage;
+use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<KitchenFridgeAssets>();
     app.add_systems(
         Update,
-        (set_background, force_move).run_if(in_state(Room::KitchenFridge)),
+        (set_background, force_move)
+            .run_if(in_state(Room::KitchenFridge))
+            .in_set(AppSystems::Update)
+            .in_set(PausableSystems),
     );
     app.add_systems(OnEnter(Room::KitchenFridge), start_fridge_loop);
 }

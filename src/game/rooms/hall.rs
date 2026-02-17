@@ -7,13 +7,17 @@ use crate::game::enemies::doordash::{Doordash, FoodBrought};
 use crate::game::rooms::kitchen_fridge_food::FoodAssets;
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
+use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<HallAssets>();
 
     app.add_systems(
         Update,
-        (set_background, set_thinking).run_if(in_state(Room::Hall)),
+        (set_background, set_thinking)
+            .run_if(in_state(Room::Hall))
+            .in_set(AppSystems::Update)
+            .in_set(PausableSystems),
     );
     app.add_systems(OnEnter(Room::Hall), start_clock_loop);
 }

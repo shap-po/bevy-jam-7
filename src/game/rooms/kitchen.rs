@@ -4,12 +4,16 @@ use crate::asset_tracking::LoadResource;
 use crate::game::enemies::dino::Dino;
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
+use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<KitchenAssets>();
     app.add_systems(
         Update,
-        (set_background, block_movement).run_if(in_state(Room::Kitchen)),
+        (set_background, block_movement)
+            .run_if(in_state(Room::Kitchen))
+            .in_set(AppSystems::Update)
+            .in_set(PausableSystems),
     );
 }
 

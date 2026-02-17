@@ -6,12 +6,16 @@ use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::dino::{Dino, KitchenWindowClosed};
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
+use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<KitchenWindowAssets>();
     app.add_systems(
         Update,
-        (set_background, set_window, force_move).run_if(in_state(Room::KitchenWindow)),
+        (set_background, set_window, force_move)
+            .run_if(in_state(Room::KitchenWindow))
+            .in_set(AppSystems::Update)
+            .in_set(PausableSystems),
     );
     app.add_systems(OnExit(Room::KitchenWindow), close_window);
     app.add_systems(OnEnter(Room::KitchenWindow), start_window_loop);

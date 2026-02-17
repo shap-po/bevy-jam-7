@@ -3,10 +3,17 @@ use bevy::prelude::*;
 use crate::asset_tracking::LoadResource;
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
+use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<BedroomBedAssets>();
-    app.add_systems(Update, set_background.run_if(in_state(Room::BedroomBed)));
+    app.add_systems(
+        Update,
+        set_background
+            .run_if(in_state(Room::BedroomBed))
+            .in_set(AppSystems::Update)
+            .in_set(PausableSystems),
+    );
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]

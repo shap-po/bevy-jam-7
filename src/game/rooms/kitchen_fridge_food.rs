@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy_bundled_observers::observers;
 
 use crate::{
+    AppSystems, PausableSystems,
     audio::{PlaySfx, Sfxlib},
     game::enemies::doordash::{Food, HeldFood},
 };
@@ -9,7 +10,12 @@ use crate::{
 pub(super) fn plugin(app: &mut App) {
     app.init_resource::<FoodAssets>();
 
-    app.add_systems(Update, hide_inventory_food);
+    app.add_systems(
+        Update,
+        hide_inventory_food
+            .in_set(AppSystems::Update)
+            .in_set(PausableSystems),
+    );
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]

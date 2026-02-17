@@ -7,12 +7,16 @@ use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::washer::{Washer, WashingMinigameComplete};
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
+use crate::{AppSystems, PausableSystems};
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<BathroomWasherAssets>();
     app.add_systems(
         Update,
-        (set_background, update_text).run_if(in_state(Room::BathroomWasher)),
+        (set_background, update_text)
+            .run_if(in_state(Room::BathroomWasher))
+            .in_set(AppSystems::Update)
+            .in_set(PausableSystems),
     );
     app.add_systems(OnEnter(Room::BathroomWasher), start_washer_loop);
 }
