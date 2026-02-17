@@ -3,13 +3,18 @@
 use bevy::prelude::*;
 
 use crate::{
-    asset_tracking::ResourceHandles, game::save::GameState, menus::Menu, screens::Screen,
+    asset_tracking::ResourceHandles,
+    audio::{PlaySfx, Sfxlib},
+    game::save::GameState,
+    menus::Menu,
+    screens::Screen,
     theme::widget,
 };
 
 pub(super) fn plugin(app: &mut App) {
     app.init_resource::<MainMenuAssets>();
     app.add_systems(OnEnter(Menu::Main), spawn_main_menu);
+    app.add_systems(OnEnter(Menu::Main), play_menu_music);
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]
@@ -97,4 +102,8 @@ fn open_credits_menu(_: On<Pointer<Click>>, mut next_menu: ResMut<NextState<Menu
 #[cfg(not(target_family = "wasm"))]
 fn exit_app(_: On<Pointer<Click>>, mut app_exit: MessageWriter<AppExit>) {
     app_exit.write(AppExit::Success);
+}
+
+fn play_menu_music(mut commands: Commands, sfx_asset: Res<Sfxlib>) {
+    commands.play_loop_sfx(sfx_asset.window_ambient_forest.clone(), 0.4, Menu::Main);
 }
