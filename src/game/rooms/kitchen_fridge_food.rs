@@ -114,7 +114,7 @@ pub(super) fn all_food(assets: &FoodAssets) -> impl Bundle {
 
 fn hide_inventory_food(
     food_query: Query<(&mut Visibility, &FridgeFood)>,
-    held_food: Res<HeldFood>,
+    held_food: Single<&HeldFood>,
 ) {
     for (mut visibility, food) in food_query {
         *visibility = if Some(food.0) == held_food.0 {
@@ -128,7 +128,7 @@ fn hide_inventory_food(
 fn pick_food(
     ev: On<Pointer<Press>>,
     food_query: Query<&FridgeFood>,
-    mut held_food: ResMut<HeldFood>,
+    mut held_food: Single<&mut HeldFood>,
     sfx_asset: Res<Sfxlib>,
     mut commands: Commands,
 ) {

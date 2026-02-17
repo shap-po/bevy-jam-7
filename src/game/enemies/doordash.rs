@@ -8,7 +8,6 @@ use crate::{
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.init_resource::<HeldFood>();
     app.add_observer(handle_opportunity);
     app.add_observer(doordash_complete);
 }
@@ -47,6 +46,7 @@ pub fn doordash(difficulty: i8) -> impl Bundle {
     (
         Name::new("Doordash"),
         Doordash::Away(0),
+        HeldFood::default(),
         Difficulty(difficulty),
         Enemy::default(),
     )
@@ -96,8 +96,8 @@ fn handle_opportunity(
     }
 }
 
-#[derive(Resource, Reflect, Debug, Default)]
-#[reflect(Resource)]
+#[derive(Component, Reflect, Debug, Default)]
+#[reflect(Component)]
 pub struct HeldFood(pub Option<Food>);
 
 #[derive(Event, Reflect, Debug, Default)]
@@ -106,8 +106,8 @@ pub struct FoodBrought;
 fn doordash_complete(
     _: On<FoodBrought>,
     mut doordash: Single<&mut Doordash>,
+    mut held_food: Single<&mut HeldFood>,
     mut command: Commands,
-    mut held_food: ResMut<HeldFood>,
     sfx_assets: Res<Sfxlib>,
 ) {
     let Doordash::Waiting {
