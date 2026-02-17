@@ -24,7 +24,7 @@ fn handle_win(commands: Commands, mut state: ResMut<GameState>) {
     state.night += 1;
     state.night = state.night.min(4);
 
-    if state.night >= 3 {
+    if state.night > 3 {
         spawn_win_screen(commands);
     } else {
         spawn_win_night_screen(commands);
