@@ -36,6 +36,8 @@ pub(super) fn plugin(app: &mut App) {
             .in_set(AppSystems::Update)
             .in_set(PausableSystems),
     );
+
+    app.add_systems(Update, totally_secret_night_selector);
 }
 
 struct DifficultyBundle {
@@ -106,5 +108,20 @@ fn tick_timer(mut timer: ResMut<GameTimer>, time: Res<Time>, mut commands: Comma
     timer.0.tick(time.delta());
     if timer.0.is_finished() {
         commands.trigger(GameOver::Win);
+    }
+}
+
+fn totally_secret_night_selector(
+    mut game_state: ResMut<GameState>,
+    input: Res<ButtonInput<KeyCode>>,
+) {
+    if input.just_pressed(KeyCode::Numpad1) {
+        game_state.night = 1;
+    } else if input.just_pressed(KeyCode::Numpad2) {
+        game_state.night = 2;
+    } else if input.just_pressed(KeyCode::Numpad3) {
+        game_state.night = 3;
+    } else if input.just_pressed(KeyCode::Numpad4) {
+        game_state.night = 4;
     }
 }
