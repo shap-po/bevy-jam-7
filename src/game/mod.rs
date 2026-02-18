@@ -47,33 +47,43 @@ struct DifficultyBundle {
     washer: i8,
 }
 
+trait GetDifficulty {
+    fn get_difficulty(&self) -> DifficultyBundle;
+}
+
+impl GetDifficulty for GameState {
+    fn get_difficulty(&self) -> DifficultyBundle {
+        match self.night {
+            1 => DifficultyBundle {
+                dino: 3,
+                ghost: 2,
+                doordash: 0,
+                washer: 2,
+            },
+            2 => DifficultyBundle {
+                dino: 6,
+                ghost: 4,
+                doordash: 2,
+                washer: 4,
+            },
+            3 => DifficultyBundle {
+                dino: 8,
+                ghost: 10,
+                doordash: 6,
+                washer: 8,
+            },
+            _ => DifficultyBundle {
+                dino: 15,
+                ghost: 15,
+                doordash: 15,
+                washer: 15,
+            },
+        }
+    }
+}
+
 pub fn start_game(mut commands: Commands, game_state: Res<GameState>) {
-    let difficulty = match game_state.night {
-        1 => DifficultyBundle {
-            dino: 3,
-            ghost: 2,
-            doordash: 0,
-            washer: 2,
-        },
-        2 => DifficultyBundle {
-            dino: 6,
-            ghost: 4,
-            doordash: 2,
-            washer: 4,
-        },
-        3 => DifficultyBundle {
-            dino: 8,
-            ghost: 10,
-            doordash: 6,
-            washer: 8,
-        },
-        _ => DifficultyBundle {
-            dino: 15,
-            ghost: 15,
-            doordash: 15,
-            washer: 15,
-        },
-    };
+    let difficulty = game_state.get_difficulty();
 
     commands.spawn((
         Name::new("Enemies"),
