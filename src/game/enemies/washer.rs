@@ -13,24 +13,34 @@ pub(super) fn plugin(app: &mut App) {
     app.add_observer(washer_complete);
 }
 
+const MAX_STATES_WORKING: i8 = 8;
+const MAX_STATES_WAITING: i8 = 3;
+
 #[derive(Component, Reflect, Debug, PartialEq)]
 #[reflect(Component)]
 pub enum Washer {
-    Passive(i8),
-    Active(i8),
+    Working(i8),
+    Waiting(i8),
     Death,
+}
+
+impl Washer {
+    fn working() -> Self {
+        Self::Working(MAX_STATES_WORKING)
+    }
+    fn waiting() -> Self {
+        Self::Waiting(MAX_STATES_WAITING)
+    }
 }
 
 pub fn washer(difficulty: i8) -> impl Bundle {
     (
         Name::new("Washer"),
-        Washer::Passive(MAXSTATES),
+        Washer::working(),
         Difficulty(difficulty),
         Enemy::default(),
     )
 }
-
-const MAXSTATES: i8 = 10;
 
 fn handle_opportunity(
     event: On<EnemyTicked>,
@@ -44,22 +54,22 @@ fn handle_opportunity(
     }
 
     *washer = match *washer {
-        Washer::Passive(i) => {
+        Washer::Working(i) => {
             if i <= 0 {
                 command.play_loop_sfx(sfx_asset.washer_beep.clone(), 0.05, Room::BathroomWasher);
-                Washer::Active(MAXSTATES)
+                Washer::waiting()
             } else {
-                Washer::Passive(i - 1)
+                Washer::Working(i - 1)
             }
         }
-        Washer::Active(i) => {
+        Washer::Waiting(i) => {
             if i <= 0 {
                 //command.play_simple_sfx(sfx_asset.washer_outro.clone());
                 command.play_volume_sfx(sfx_asset.boom.clone(), 0.1);
                 command.trigger(GameOver::Death(EnemyType::Washer));
                 Washer::Death
             } else {
-                Washer::Active(i - 1)
+                Washer::Waiting(i - 1)
             }
         }
         Washer::Death => Washer::Death,
@@ -70,5 +80,5 @@ fn handle_opportunity(
 pub struct WashingMinigameComplete;
 
 fn washer_complete(_: On<WashingMinigameComplete>, mut washer: Single<&mut Washer>) {
-    **washer = Washer::Passive(MAXSTATES);
+    **washer = Washer::working();
 }

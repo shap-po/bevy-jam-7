@@ -56,7 +56,7 @@ fn set_background(
 }
 
 fn start_quet_washer_loop(mut commands: Commands, sfx_asset: Res<Sfxlib>, washer: Single<&Washer>) {
-    let Washer::Passive(_) = **washer else {
+    let Washer::Working(_) = **washer else {
         return;
     };
     commands.play_loop_sfx(sfx_asset.washer_ambient_loop.clone(), 0.05, Room::Bathroom);

@@ -85,8 +85,8 @@ fn set_background(
 
 fn update_text(mut text: Single<&mut Text2d, With<WasherText>>, washer: Single<&Washer>) {
     text.0 = match **washer {
-        Washer::Passive(time) => format!("{:>2}:00", time),
-        Washer::Active(_) => "!!!!".to_string(),
+        Washer::Working(time) => format!("{:>2}:00", time),
+        Washer::Waiting(_) => "!!!!".to_string(),
         Washer::Death => "boom".to_string(),
     }
 }
@@ -99,7 +99,7 @@ where
         let Ok(_) = sprites.get(ev.event_target()) else {
             return;
         };
-        let Washer::Active(_) = **washer else {
+        let Washer::Waiting(_) = **washer else {
             return;
         };
         commands.trigger(WashingMinigameComplete);
@@ -107,7 +107,7 @@ where
 }
 
 fn start_washer_loop(mut commands: Commands, sfx_asset: Res<Sfxlib>, washer: Single<&Washer>) {
-    let Washer::Passive(_) = **washer else {
+    let Washer::Working(_) = **washer else {
         return;
     };
     commands.play_loop_sfx(
