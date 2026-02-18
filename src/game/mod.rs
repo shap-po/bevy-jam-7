@@ -14,7 +14,7 @@ mod interactions;
 mod rooms;
 pub mod save;
 
-const GAME_DURATION: Duration = Duration::from_secs(5 * 60);
+const GAME_DURATION: Duration = Duration::from_secs(4 * 60);
 
 #[rustfmt::skip]
 pub(super) fn plugin(app: &mut App) {
