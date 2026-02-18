@@ -12,6 +12,9 @@ pub(super) fn plugin(app: &mut App) {
     app.add_observer(doordash_complete);
 }
 
+const MAX_STATES_AWAY: i8 = 2;
+const MAX_STATES_WAITING: i8 = 4;
+
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
 pub enum Doordash {
@@ -51,9 +54,6 @@ pub fn doordash(difficulty: i8) -> impl Bundle {
         Enemy::default(),
     )
 }
-
-const MAX_STATES_AWAY: i8 = 2; // todo: replace with difficulty scaling
-const MAX_STATES_WAITING: i8 = 5; // todo: replace with difficulty scaling
 
 fn handle_opportunity(
     event: On<EnemyTicked>,
