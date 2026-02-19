@@ -87,7 +87,7 @@ fn set_background(
 fn block_movement(
     mut room: Single<&mut RoomComponent, With<KitchenRoom>>,
     switchers: Query<&mut RoomSwitcher, With<KitchenSwitcher>>,
-    dino: Single<&Dino>,
+    dino: Single<&Dino, Changed<Dino>>,
 ) {
     if **dino == Dino::Death {
         room.can_move_forward = false;
