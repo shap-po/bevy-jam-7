@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use crate::asset_tracking::LoadResource;
 use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::washer::Washer;
+use crate::game::rooms::util::room_switch::room_switcher;
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
 use crate::{AppSystems, PausableSystems};
@@ -21,9 +22,10 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Resource, Asset, Clone, Reflect)]
 #[reflect(Resource)]
-struct BathroomAssets {
-    #[dependency]
-    background: Handle<Image>,
+#[rustfmt::skip]
+pub(super) struct BathroomAssets {
+    #[dependency] background: Handle<Image>,
+    #[dependency] washer: Handle<Image>,
 }
 
 impl FromWorld for BathroomAssets {
@@ -31,12 +33,13 @@ impl FromWorld for BathroomAssets {
         let assets = world.resource::<AssetServer>();
         Self {
             background: assets.load("images/rooms/bathroom_0.png"),
+            washer: assets.load("images/rooms/prop/bathroom_navigation.png"),
         }
     }
 }
 
 #[rustfmt::skip]
-pub(super) fn room() -> impl Bundle {
+pub(super) fn room(assets: &BathroomAssets) -> impl Bundle {
     (
         RoomComponent {
             this_room: Room::Bathroom,
@@ -45,6 +48,9 @@ pub(super) fn room() -> impl Bundle {
             right_room: Some(Room::Bedroom),
             ..Default::default()
         },
+        children![
+            room_switcher(Room::BathroomWasher, assets.washer.clone()),
+        ],
     )
 }
 

@@ -1,3 +1,4 @@
+use crate::game::rooms::bathroom::BathroomAssets;
 use crate::game::rooms::bathroom_washer::BathroomWasherAssets;
 use crate::game::rooms::bedroom::BedroomAssets;
 use crate::game::rooms::util::transitions::ChangeRoom;
@@ -146,6 +147,7 @@ fn spawn_background(mut commands: Commands) {
 
 fn spawn_rooms(
     mut commands: Commands,
+    bathroom_assets: Res<BathroomAssets>,
     bathroom_washer_assets: Res<BathroomWasherAssets>,
     bedroom_assets: Res<BedroomAssets>,
     hall_assets: Res<HallAssets>,
@@ -157,7 +159,7 @@ fn spawn_rooms(
         Visibility::Visible,
         DespawnOnExit(Screen::Gameplay),
         children![
-            bathroom::room(),
+            bathroom::room(&bathroom_assets),
             bathroom_washer::room(&bathroom_washer_assets),
             bedroom::room(&bedroom_assets),
             bedroom_bed::room(),
