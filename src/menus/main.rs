@@ -19,7 +19,7 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Resource, Asset, Clone, Reflect)]
 #[reflect(Resource)]
-struct MainMenuAssets {
+pub struct MainMenuAssets {
     #[dependency]
     background: Handle<Image>,
 }
