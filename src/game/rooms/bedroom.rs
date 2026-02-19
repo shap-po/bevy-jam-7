@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::asset_tracking::LoadResource;
+use crate::game::rooms::util::room_switch::room_switcher;
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
 use crate::{AppSystems, PausableSystems};
@@ -18,9 +19,12 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Resource, Asset, Clone, Reflect)]
 #[reflect(Resource)]
-struct BedroomAssets {
-    #[dependency]
-    background: Handle<Image>,
+#[rustfmt::skip]
+pub(super) struct BedroomAssets {
+    #[dependency] background: Handle<Image>,
+    #[dependency] left_door: Handle<Image>,
+    #[dependency] middle_door: Handle<Image>,
+    #[dependency] right_door: Handle<Image>,
 }
 
 impl FromWorld for BedroomAssets {
@@ -28,12 +32,15 @@ impl FromWorld for BedroomAssets {
         let assets = world.resource::<AssetServer>();
         Self {
             background: assets.load("images/rooms/bedroom.png"),
+            left_door: assets.load("images/rooms/prop/bedroom_door_left.png"),
+            middle_door: assets.load("images/rooms/prop/bedroom_door_middle.png"),
+            right_door: assets.load("images/rooms/prop/bedroom_door_right.png"),
         }
     }
 }
 
 #[rustfmt::skip]
-pub(super) fn room() -> impl Bundle {
+pub(super) fn room(assets: &BedroomAssets) -> impl Bundle {
     (
         RoomComponent {
             this_room: Room::Bedroom,
@@ -43,6 +50,11 @@ pub(super) fn room() -> impl Bundle {
             right_room: Some(Room::Kitchen),
             ..Default::default()
         },
+        children![
+            room_switcher(Room::Bathroom, assets.left_door.clone()),
+            room_switcher(Room::Hall, assets.middle_door.clone()),
+            room_switcher(Room::Kitchen, assets.right_door.clone()),
+        ]
     )
 }
 
