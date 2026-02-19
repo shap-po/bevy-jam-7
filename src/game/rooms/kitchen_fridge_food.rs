@@ -126,7 +126,7 @@ fn hide_inventory_food(
 }
 
 fn pick_food(
-    ev: On<Pointer<Press>>,
+    ev: On<Pointer<Release>>,
     food_query: Query<&FridgeFood>,
     mut held_food: Single<&mut HeldFood>,
     sfx_asset: Res<Sfxlib>,

@@ -62,7 +62,7 @@ pub(super) fn room(assets: &BathroomWasherAssets) -> impl Bundle {
                 Sprite::from_image(assets.washer.clone()),
                 Pickable::default(),
                 observers![
-                    update_washer::<Pointer<Press>>(),
+                    update_washer::<Pointer<Release>>(),
                 ],
             ),
             (
