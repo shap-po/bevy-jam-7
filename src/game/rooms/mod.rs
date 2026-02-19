@@ -122,6 +122,7 @@ impl RoomComponent {
         self.this_room == room
     }
 
+    #[allow(dead_code)]
     fn unblock_movement(&mut self) {
         self.can_move_forward = true;
         self.can_move_back = true;

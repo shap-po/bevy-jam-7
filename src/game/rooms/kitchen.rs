@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::asset_tracking::LoadResource;
 use crate::game::enemies::dino::Dino;
-use crate::game::rooms::util::room_switch::room_switcher;
+use crate::game::rooms::util::room_switch::{RoomSwitcher, room_switcher};
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
 use crate::{AppSystems, PausableSystems};
@@ -44,7 +44,10 @@ impl FromWorld for KitchenAssets {
 #[reflect(Component)]
 struct KitchenRoom;
 
-#[rustfmt::skip]
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+struct KitchenSwitcher;
+
 pub(super) fn room(assets: &KitchenAssets) -> impl Bundle {
     (
         KitchenRoom,
@@ -57,8 +60,14 @@ pub(super) fn room(assets: &KitchenAssets) -> impl Bundle {
             ..Default::default()
         },
         children![
-            room_switcher(Room::KitchenWindow, assets.window.clone()),
-            room_switcher(Room::KitchenFridge, assets.fridge.clone()),
+            (
+                KitchenSwitcher,
+                room_switcher(Room::KitchenWindow, assets.window.clone())
+            ),
+            (
+                KitchenSwitcher,
+                room_switcher(Room::KitchenFridge, assets.fridge.clone())
+            ),
         ],
     )
 }
@@ -75,11 +84,17 @@ fn set_background(
     });
 }
 
-fn block_movement(mut room: Single<&mut RoomComponent, With<KitchenRoom>>, dino: Single<&Dino>) {
+fn block_movement(
+    mut room: Single<&mut RoomComponent, With<KitchenRoom>>,
+    switchers: Query<&mut RoomSwitcher, With<KitchenSwitcher>>,
+    dino: Single<&Dino>,
+) {
     if **dino == Dino::Death {
         room.can_move_forward = false;
         room.can_move_right = false;
-    } else {
-        room.unblock_movement();
+
+        for mut switcher in switchers {
+            switcher.active = false
+        }
     }
 }

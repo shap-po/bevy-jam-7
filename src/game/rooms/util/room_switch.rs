@@ -5,13 +5,22 @@ use crate::game::rooms::{Room, util::transitions::ChangeRoom};
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-struct RoomSwitcher(Room);
+pub struct RoomSwitcher {
+    room: Room,
+    pub active: bool,
+}
 
 #[rustfmt::skip]
 pub fn room_switcher(room:Room, image: Handle<Image>) -> impl Bundle{
+    let mut sprite = Sprite::from_image(image);
+    sprite.color.set_alpha(0.0); // for now, no need to render; use sprite for picking
+
     (
-        RoomSwitcher(room),
-        Sprite::from_image(image),
+        RoomSwitcher{
+            room,
+            active: true,
+        },
+        sprite,
         Pickable::default(),
         observers![
             handle_press,
@@ -27,6 +36,9 @@ fn handle_press(
     let Ok(room_switch) = room_switch_query.get(ev.event_target()) else {
         return;
     };
+    if !room_switch.active {
+        return;
+    }
 
-    commands.trigger(ChangeRoom(room_switch.0));
+    commands.trigger(ChangeRoom(room_switch.room));
 }
