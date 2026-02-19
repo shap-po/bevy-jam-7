@@ -1,6 +1,7 @@
 use crate::game::rooms::bathroom::BathroomAssets;
 use crate::game::rooms::bathroom_washer::BathroomWasherAssets;
 use crate::game::rooms::bedroom::BedroomAssets;
+use crate::game::rooms::kitchen::KitchenAssets;
 use crate::game::rooms::util::transitions::ChangeRoom;
 use crate::{
     AppSystems, PausableSystems,
@@ -151,6 +152,7 @@ fn spawn_rooms(
     bathroom_washer_assets: Res<BathroomWasherAssets>,
     bedroom_assets: Res<BedroomAssets>,
     hall_assets: Res<HallAssets>,
+    kitchen_assets: Res<KitchenAssets>,
     food_assets: Res<FoodAssets>,
 ) {
     commands.spawn((
@@ -164,7 +166,7 @@ fn spawn_rooms(
             bedroom::room(&bedroom_assets),
             bedroom_bed::room(),
             hall::room(&hall_assets),
-            kitchen::room(),
+            kitchen::room(&kitchen_assets),
             kitchen_fridge::room(&food_assets),
             kitchen_window::room(),
             transition::room(),

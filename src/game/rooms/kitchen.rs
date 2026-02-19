@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 use crate::asset_tracking::LoadResource;
 use crate::game::enemies::dino::Dino;
+use crate::game::rooms::util::room_switch::room_switcher;
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
 use crate::{AppSystems, PausableSystems};
@@ -19,11 +20,12 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Resource, Asset, Clone, Reflect)]
 #[reflect(Resource)]
-struct KitchenAssets {
-    #[dependency]
-    background: Handle<Image>,
-    #[dependency]
-    dino_death: Handle<Image>,
+#[rustfmt::skip]
+pub(super) struct KitchenAssets {
+    #[dependency] background: Handle<Image>,
+    #[dependency] dino_death: Handle<Image>,
+    #[dependency] window: Handle<Image>,
+    #[dependency] fridge: Handle<Image>,
 }
 
 impl FromWorld for KitchenAssets {
@@ -32,6 +34,8 @@ impl FromWorld for KitchenAssets {
         Self {
             background: assets.load("images/rooms/kitchen.png"),
             dino_death: assets.load("images/rooms/kitchen_dino_death.png"),
+            window: assets.load("images/rooms/prop/kitchen_navigation_window.png"),
+            fridge: assets.load("images/rooms/prop/kitchen_navigation_fridge.png"),
         }
     }
 }
@@ -41,7 +45,7 @@ impl FromWorld for KitchenAssets {
 struct KitchenRoom;
 
 #[rustfmt::skip]
-pub(super) fn room() -> impl Bundle {
+pub(super) fn room(assets: &KitchenAssets) -> impl Bundle {
     (
         KitchenRoom,
         RoomComponent {
@@ -52,6 +56,10 @@ pub(super) fn room() -> impl Bundle {
             right_room: Some(Room::KitchenWindow),
             ..Default::default()
         },
+        children![
+            room_switcher(Room::KitchenWindow, assets.window.clone()),
+            room_switcher(Room::KitchenFridge, assets.fridge.clone()),
+        ],
     )
 }
 
