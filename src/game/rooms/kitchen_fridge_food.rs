@@ -103,13 +103,17 @@ fn food(food: Food, assets: &FoodAssets) -> impl Bundle {
 }
 
 pub(super) fn all_food(assets: &FoodAssets) -> impl Bundle {
-    children![
-        food(Food::Apple, assets),
-        food(Food::Burrito, assets),
-        food(Food::ItalianSandwich, assets),
-        food(Food::SalamiSandwich, assets),
-        food(Food::Tralala, assets),
-    ]
+    (
+        Transform::default(),
+        Visibility::default(),
+        children![
+            food(Food::Apple, assets),
+            food(Food::Burrito, assets),
+            food(Food::ItalianSandwich, assets),
+            food(Food::SalamiSandwich, assets),
+            food(Food::Tralala, assets),
+        ],
+    )
 }
 
 fn hide_inventory_food(

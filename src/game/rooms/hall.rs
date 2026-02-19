@@ -5,6 +5,7 @@ use crate::asset_tracking::LoadResource;
 use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::doordash::{Doordash, FoodBrought};
 use crate::game::rooms::kitchen_fridge_food::FoodAssets;
+use crate::game::rooms::util::room_switch::{ArrowDirection, arrow_room_switcher};
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
 use crate::{AppSystems, PausableSystems};
@@ -93,6 +94,7 @@ pub(super) fn room(assets:&HallAssets) -> impl Bundle {
                     ),
                 ],
             ),
+            arrow_room_switcher(Room::Bedroom, ArrowDirection::Down),
         ],
     )
 }

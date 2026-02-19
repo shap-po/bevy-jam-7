@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::asset_tracking::LoadResource;
 use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::washer::Washer;
-use crate::game::rooms::util::room_switch::room_switcher;
+use crate::game::rooms::util::room_switch::{ArrowDirection, arrow_room_switcher, room_switcher};
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
 use crate::{AppSystems, PausableSystems};
@@ -50,6 +50,7 @@ pub(super) fn room(assets: &BathroomAssets) -> impl Bundle {
         },
         children![
             room_switcher(Room::BathroomWasher, assets.washer.clone()),
+            arrow_room_switcher(Room::Bedroom, ArrowDirection::Down),
         ],
     )
 }

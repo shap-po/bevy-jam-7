@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::asset_tracking::LoadResource;
-use crate::game::rooms::util::room_switch::room_switcher;
+use crate::game::rooms::util::room_switch::{ArrowDirection, arrow_room_switcher, room_switcher};
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
 use crate::{AppSystems, PausableSystems};
@@ -54,6 +54,7 @@ pub(super) fn room(assets: &BedroomAssets) -> impl Bundle {
             room_switcher(Room::Bathroom, assets.left_door.clone()),
             room_switcher(Room::Hall, assets.middle_door.clone()),
             room_switcher(Room::Kitchen, assets.right_door.clone()),
+            arrow_room_switcher(Room::BedroomBed, ArrowDirection::Down),
         ]
     )
 }

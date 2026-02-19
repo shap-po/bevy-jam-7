@@ -4,5 +4,9 @@ pub mod room_switch;
 pub mod transitions;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins(transitions::plugin);
+    #[rustfmt::skip]
+    app.add_plugins((
+        room_switch::plugin,
+        transitions::plugin,
+    ));
 }

@@ -2,7 +2,9 @@ use bevy::prelude::*;
 
 use crate::asset_tracking::LoadResource;
 use crate::game::enemies::dino::Dino;
-use crate::game::rooms::util::room_switch::{RoomSwitcher, room_switcher};
+use crate::game::rooms::util::room_switch::{
+    ArrowDirection, RoomSwitcher, arrow_room_switcher, room_switcher,
+};
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
 use crate::{AppSystems, PausableSystems};
@@ -68,6 +70,7 @@ pub(super) fn room(assets: &KitchenAssets) -> impl Bundle {
                 KitchenSwitcher,
                 room_switcher(Room::KitchenFridge, assets.fridge.clone())
             ),
+            arrow_room_switcher(Room::Bedroom, ArrowDirection::Down),
         ],
     )
 }

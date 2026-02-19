@@ -4,6 +4,7 @@ use bevy_bundled_observers::observers;
 use crate::asset_tracking::LoadResource;
 use crate::audio::{PlaySfx, Sfxlib};
 use crate::game::enemies::dino::{Dino, KitchenWindowClosed};
+use crate::game::rooms::util::room_switch::{ArrowDirection, arrow_room_switcher};
 use crate::game::rooms::{Background, Room, RoomComponent};
 use crate::utils::SetImage;
 use crate::{AppSystems, PausableSystems};
@@ -83,6 +84,8 @@ pub(super) fn room() -> impl Bundle {
                     update_window::<Pointer<Out>>(false),
                 ],
             ),
+            arrow_room_switcher(Room::Kitchen, ArrowDirection::Down),
+            arrow_room_switcher(Room::KitchenFridge, ArrowDirection::Left),
         ],
     )
 }
