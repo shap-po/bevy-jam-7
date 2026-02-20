@@ -5,10 +5,9 @@ use crate::game::rooms::Room;
 use crate::screens::Screen;
 use crate::{AppSystems, PausableSystems};
 use bevy::prelude::*;
+use bevy_bundled_observers::observers;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_observer(handle_opportunity);
-
     app.add_systems(
         Update,
         add_advantage
@@ -41,22 +40,20 @@ pub fn ghost(difficulty: i8) -> impl Bundle {
         Enemy::default(),
         children![
             ghost_overlay::overlay(),
-        ]
+        ],
+        observers![
+            handle_opportunity,
+        ],
     )
 }
 
 fn handle_opportunity(
-    event: On<EnemyTicked>,
-    ghost_query: Single<(Entity, &mut Ghost)>,
+    _: On<EnemyTicked>,
+    mut ghost: Single<&mut Ghost>,
     room: Res<State<Room>>,
     mut command: Commands,
     sfx_assets: Res<Sfxlib>,
 ) {
-    let (entity, mut ghost) = ghost_query.into_inner();
-    if entity != event.event_target() {
-        return;
-    }
-
     if **room == Room::BedroomBed {
         ghost.0 = 0;
     } else {

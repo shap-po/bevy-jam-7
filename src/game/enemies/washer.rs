@@ -7,9 +7,9 @@ use crate::{
     },
 };
 use bevy::prelude::*;
+use bevy_bundled_observers::observers;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_observer(handle_opportunity);
     app.add_observer(washer_complete);
 }
 
@@ -33,27 +33,26 @@ impl Washer {
     }
 }
 
+#[rustfmt::skip]
 pub fn washer(difficulty: i8) -> impl Bundle {
     (
         Name::new("Washer"),
         Washer::working(),
         Difficulty(difficulty),
         Enemy::default(),
+        observers![
+            handle_opportunity,
+        ]
     )
 }
 
 fn handle_opportunity(
-    event: On<EnemyTicked>,
-    washer_query: Single<(Entity, &mut Washer)>,
+    _: On<EnemyTicked>,
+    mut washer: Single<&mut Washer>,
     sfx_asset: Res<Sfxlib>,
     mut command: Commands,
 ) {
-    let (entity, mut washer) = washer_query.into_inner();
-    if entity != event.event_target() {
-        return;
-    }
-
-    *washer = match *washer {
+    **washer = match **washer {
         Washer::Working(i) => {
             if i <= 0 {
                 command.play_loop_sfx(sfx_asset.washer_beep.clone(), 0.05, Room::BathroomWasher);

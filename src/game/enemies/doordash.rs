@@ -6,9 +6,9 @@ use crate::{
     },
 };
 use bevy::prelude::*;
+use bevy_bundled_observers::observers;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_observer(handle_opportunity);
     app.add_observer(doordash_complete);
 }
 
@@ -45,6 +45,7 @@ impl Food {
     }
 }
 
+#[rustfmt::skip]
 pub fn doordash(difficulty: i8) -> impl Bundle {
     (
         Name::new("Doordash"),
@@ -52,21 +53,19 @@ pub fn doordash(difficulty: i8) -> impl Bundle {
         HeldFood::default(),
         Difficulty(difficulty),
         Enemy::default(),
+        observers![
+            handle_opportunity,
+        ],
     )
 }
 
 fn handle_opportunity(
-    event: On<EnemyTicked>,
-    doordash_query: Single<(Entity, &mut Doordash)>,
+    _: On<EnemyTicked>,
+    mut doordash: Single<&mut Doordash>,
     sfx_assets: Res<Sfxlib>,
     mut command: Commands,
 ) {
-    let (entity, mut doordash) = doordash_query.into_inner();
-    if entity != event.event_target() {
-        return;
-    }
-
-    *doordash = match *doordash {
+    **doordash = match **doordash {
         Doordash::Away(i) => {
             if i > MAX_STATES_AWAY {
                 command.play_volume_sfx(sfx_assets.rand_doordash_sfx(), 0.05);

@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_bundled_observers::observers;
 
 use crate::{
     AppSystems, PausableSystems,
@@ -12,7 +13,6 @@ use crate::{
 
 pub(super) fn plugin(app: &mut App) {
     app.init_resource::<KitchenWindowClosed>();
-    app.add_observer(handle_opportunity);
 
     app.add_systems(
         Update,
@@ -40,21 +40,20 @@ pub fn dino(difficulty: i8) -> impl Bundle {
         Dino::Gone,
         Difficulty(difficulty),
         Enemy::default(),
+        observers![
+            handle_opportunity,
+        ],
     )
 }
 
 fn handle_opportunity(
-    event: On<EnemyTicked>,
-    dino_query: Single<(Entity, &mut Dino)>,
+    _: On<EnemyTicked>,
+    mut dino: Single<&mut Dino>,
     window: Res<KitchenWindowClosed>,
     sfx_asset: Res<Sfxlib>,
     mut command: Commands,
 ) {
-    let (entity, mut dino) = dino_query.into_inner();
-    if entity != event.event_target() {
-        return;
-    }
-    *dino = match *dino {
+    **dino = match **dino {
         Dino::Gone => Dino::Far,
         Dino::Far => Dino::Near,
         Dino::Near => Dino::Stalk,
